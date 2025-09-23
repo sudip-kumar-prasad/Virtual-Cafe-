@@ -9,18 +9,15 @@ export const CartProvider = ({ children }) => {
   const [cartTotal, setCartTotal] = useState(0);
   
   useEffect(() => {
-    // Calculate cart total whenever items change
     const total = cartItems.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
     );
     setCartTotal(total);
-    
-    // Save to localStorage
+
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
   
-  // Load cart from localStorage on initial mount
   useEffect(() => {
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
@@ -35,18 +32,15 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (item) => {
     setCartItems(prevItems => {
-      // Check if item already exists in cart
       const existingItem = prevItems.find(cartItem => cartItem.id === item.id);
       
       if (existingItem) {
-        // Increment quantity if item exists
         return prevItems.map(cartItem => 
           cartItem.id === item.id 
             ? { ...cartItem, quantity: cartItem.quantity + 1 }
             : cartItem
         );
       } else {
-        // Add new item with quantity of 1
         return [...prevItems, { ...item, quantity: 1 }];
       }
     });
