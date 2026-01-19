@@ -1,229 +1,80 @@
-# 🚀 Vercel Deployment - Step by Step Guide
+# Deployment Guide
 
-## Summary of Changes Made
+## Backend Deployment on Render
 
-I've prepared your project for Vercel deployment with:
-- ✅ Backend `vercel.json` configuration
-- ✅ Updated root `vercel.json` 
-- ✅ Environment variable templates
-- ✅ Deployment guide document
-- ✅ All pushed to GitHub
+### Step 1: Prepare Backend
+1. Push your code to GitHub
+2. Go to [render.com](https://render.com) and sign up/login
+3. Click "New +" → "Web Service"
+4. Connect your GitHub repository
+5. Select the `backend` folder as root directory
 
----
+### Step 2: Configure Render
+- **Name:** virtual-cafe-backend
+- **Environment:** Node
+- **Build Command:** `npm install`
+- **Start Command:** `npm start`
+- **Plan:** Free
 
-## 🎯 DEPLOYMENT STEPS
-
-### Step 1: Deploy Backend to Vercel
-
-#### 1.1 Go to Vercel Dashboard
-- Visit: https://vercel.com/dashboard
-- Sign in with GitHub if not already signed in
-
-#### 1.2 Create New Project
-- Click **"Add New..."** button
-- Click **"Project"**
-- Select your GitHub repo: **Virtual-Cafe-**
-
-#### 1.3 Configure Project
-- **Framework Preset**: Select **"Other"**
-- **Root Directory**: Select **`backend/`** from dropdown
-  
-#### 1.4 Set Environment Variables
-- Click **"Environment Variables"** section
-- Add these variables (get values from your current `.env`):
-
+### Step 3: Set Environment Variables
+Add these in Render dashboard:
 ```
-DATABASE_URL = mysql://root:%40J3sci767@localhost:3306/virtual_cafe
-
-JWT_SECRET = your-secret-key-change-this-in-production
-
-NODE_ENV = production
-```
-
-⚠️ **IMPORTANT**: Your MySQL database must be accessible from Vercel servers!
-- If using local MySQL, consider using a cloud database like:
-  - PlanetScale (MySQL compatible)
-  - AWS RDS
-  - DigitalOcean Managed Database
-
-#### 1.5 Deploy
-- Click **"Deploy"** button
-- Wait for deployment to complete (takes ~2-3 minutes)
-- You'll get a URL like: `https://your-backend-name.vercel.app`
-- **Copy this URL - you'll need it for frontend!**
-
-#### 1.6 Verify Backend
-Open your terminal and test:
-```bash
-curl https://your-backend-name.vercel.app/health
-```
-
-Should return: `{"status":"OK","message":"Server is running"}`
-
----
-
-### Step 2: Deploy Frontend to Vercel
-
-#### 2.1 Create New Project
-- Go back to https://vercel.com/dashboard
-- Click **"Add New..."** → **"Project"**
-- Select your GitHub repo again: **Virtual-Cafe-**
-
-#### 2.2 Configure Project
-- **Framework Preset**: Select **"Create React App"**
-- **Root Directory**: Select **`frontend/`** from dropdown
-- **Build Command**: `npm run build` (should auto-fill)
-- **Install Command**: `npm install` (should auto-fill)
-
-#### 2.3 Set Environment Variables
-- Click **"Environment Variables"** section
-- Add this variable:
-
-```
-REACT_APP_API_URL = https://your-backend-name.vercel.app/api
-```
-
-Replace `your-backend-name` with your actual backend URL from Step 1.5
-
-#### 2.4 Deploy
-- Click **"Deploy"** button
-- Wait for deployment to complete
-- You'll get a URL like: `https://your-frontend-name.vercel.app`
-
-#### 2.5 Verify Frontend
-- Open https://your-frontend-name.vercel.app in browser
-- Try signing up with a new email
-- It should work! 🎉
-
----
-
-## 📊 Deployment Checklist
-
-- [ ] Backend deployed to Vercel
-- [ ] Backend URL copied: `https://___________`
-- [ ] Frontend environment variable updated with backend URL
-- [ ] Frontend deployed to Vercel
-- [ ] Backend health endpoint working
-- [ ] Frontend loads in browser
-- [ ] Can create a new user account
-- [ ] Can sign in successfully
-
----
-
-## 🔧 Important Configurations
-
-### Backend (vercel.json)
-Already configured in `/backend/vercel.json`:
-- Uses `@vercel/node` runtime
-- Runs `server.js` as entry point
-- All routes directed to server.js
-- NODE_ENV set to production
-
-### Frontend (vercel.json)
-Already configured in `/frontend/vercel.json`:
-- Uses Create React App framework
-- Builds to `build/` directory
-- Auto-handles React Router
-
----
-
-## 🚨 Troubleshooting
-
-### Backend Deployment Issues
-
-**Problem**: Deployment fails with "MODULE_NOT_FOUND"
-- Solution: Check that `postinstall` script in backend package.json runs `prisma generate`
-- This is already configured ✅
-
-**Problem**: 502 Bad Gateway Error
-- Check backend logs: https://vercel.com/dashboard → Your Backend Project → Logs
-- Likely causes:
-  - Database connection error (check DATABASE_URL)
-  - Server crash (check logs)
-  - Environment variables not set
-
-**Problem**: Database Connection Error
-- Verify DATABASE_URL is correct
-- If using local MySQL:
-  - Set up ngrok tunnel: `ngrok tcp 3306`
-  - Update DATABASE_URL with ngrok URL
-  - Or use cloud database (recommended)
-
-### Frontend Issues
-
-**Problem**: SignUp fails with "Cannot fetch from API"
-- Check REACT_APP_API_URL in Vercel environment variables
-- Must include `/api` at the end
-- Clear browser cache (hard refresh: Ctrl+Shift+R or Cmd+Shift+R)
-
-**Problem**: Built files missing
-- Check that `npm run build` is set as Build Command
-- Check build logs for errors
-
----
-
-## 📚 Environment Variables Reference
-
-### Backend (.env)
-```
-DATABASE_URL=mysql://user:password@host:port/database
-JWT_SECRET=secure-random-string
-PORT=          (auto, leave blank for Vercel)
 NODE_ENV=production
+PORT=10000
+DB_HOST=your_mysql_host
+DB_USER=your_mysql_user  
+DB_PASSWORD=your_mysql_password
+DB_NAME=Virtual_cafe
+JWT_SECRET=your_secure_jwt_secret
 ```
 
-### Frontend (.env)
+### Step 4: Database Setup
+You'll need a cloud MySQL database:
+- **Option 1:** PlanetScale (free tier)
+- **Option 2:** Railway MySQL
+- **Option 3:** Aiven MySQL
+
+## Frontend Deployment on Vercel
+
+### Step 1: Update API URL
+1. Copy your Render backend URL (e.g., `https://virtual-cafe-backend.onrender.com`)
+2. Update `frontend/.env.production`:
 ```
-REACT_APP_API_URL=https://your-backend.vercel.app/api
+REACT_APP_API_URL=https://your-backend-url.onrender.com/api
 ```
 
----
+### Step 2: Deploy to Vercel
+1. Go to [vercel.com](https://vercel.com) and sign up/login
+2. Click "New Project"
+3. Import your GitHub repository
+4. Set **Root Directory** to `frontend`
+5. Click "Deploy"
 
-## 🔐 Security Notes
+### Step 3: Environment Variables (Vercel)
+Add in Vercel dashboard:
+```
+REACT_APP_API_URL=https://your-backend-url.onrender.com/api
+```
 
-- ✅ `.env` is in `.gitignore` - not committed
-- ✅ Credentials stored only in Vercel environment variables
-- ✅ Frontend has no sensitive data
-- ⚠️ Change `JWT_SECRET` to a strong random string in production
-- ⚠️ Use HTTPS only (Vercel auto-enables this)
+## Deployment Order
+1. **Deploy Backend first** (Render)
+2. **Get backend URL** from Render
+3. **Update frontend .env.production** with backend URL
+4. **Deploy Frontend** (Vercel)
 
----
+## Post-Deployment
+1. Test authentication (signup/signin)
+2. Verify API connectivity
+3. Check database connections
+4. Test all features
 
-## 📈 Next Steps (Optional)
+## Troubleshooting
+- **CORS errors:** Add frontend URL to backend CORS config
+- **Database connection:** Verify MySQL credentials
+- **API not found:** Check backend URL in frontend env
+- **Build failures:** Check logs in respective platforms
 
-After deployment is working:
-
-1. **Set up custom domain:**
-   - In Vercel dashboard → Settings → Domains
-   - Add your custom domain
-
-2. **Enable automatic deployments:**
-   - Already enabled! Pushing to `main` auto-deploys
-
-3. **Set up staging environment:**
-   - Create a branch like `staging`
-   - Deploy to different Vercel project for testing
-
-4. **Monitor performance:**
-   - Use Vercel Analytics
-   - Check logs regularly
-
----
-
-## 🆘 Need Help?
-
-**Vercel Docs**: https://vercel.com/docs
-**Common Issues**: https://vercel.com/docs/troubleshooting
-**GitHub Repo**: https://github.com/sudip-kumar-prasad/Virtual-Cafe-
-
----
-
-## ✨ You're All Set!
-
-Your project is now ready for Vercel deployment. The configuration files are:
-- `/backend/vercel.json` - Backend configuration
-- `/frontend/vercel.json` - Frontend configuration  
-- `/VERCEL_DEPLOYMENT.md` - Full deployment guide
-- `/deploy.sh` - Helper script
-
-Good luck! 🚀
+## URLs After Deployment
+- **Frontend:** `https://your-app.vercel.app`
+- **Backend:** `https://your-backend.onrender.com`
+- **API:** `https://your-backend.onrender.com/api`

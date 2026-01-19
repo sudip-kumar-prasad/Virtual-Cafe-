@@ -1,0 +1,24 @@
+# Environment Variables Template
+# Copy these values to your deployment platforms
+
+## Backend Environment Variables (Render)
+NODE_ENV=production
+PORT=10000
+DB_HOST=your_planetscale_host_here
+DB_USER=your_planetscale_username_here
+DB_PASSWORD=your_planetscale_password_here
+DB_NAME=virtual-cafe
+JWT_SECRET=your_super_secret_jwt_key_make_it_long_and_random_at_least_32_characters
+
+## Frontend Environment Variables (Vercel)
+REACT_APP_API_URL=https://your-backend-name.onrender.com/api
+
+## PlanetScale Database Connection Example
+# Host: aws.connect.psdb.cloud
+# Username: xxxxxxxxxx
+# Password: pscale_pw_xxxxxxxxxx
+# Database: virtual-cafe
+
+## Sample JWT Secret Generator
+# You can generate a secure JWT secret using:
+# node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"

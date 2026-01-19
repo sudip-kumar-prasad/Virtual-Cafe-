@@ -37,7 +37,7 @@ const Navbar = () => {
         <div className="auth-links">
           {user ? (
             <>
-              <span className="user-name">Hi, {user.user?.name || user.name}</span>
+              <span className="user-name">Hi, {user.name}</span>
               <button className="logout-btn" onClick={handleLogout}>Logout</button>
             </>
           ) : (

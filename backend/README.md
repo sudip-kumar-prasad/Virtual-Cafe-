@@ -1,120 +1,70 @@
 # Virtual Cafe Backend
 
-Backend API for Virtual Cafe with authentication using Node.js, Express, Prisma, MySQL, JWT, and bcrypt.
+Express.js backend API with MySQL database for the Virtual Cafe application.
 
-## Setup Instructions
+## Features
 
-### 1. Install Dependencies
+- User authentication (JWT)
+- Menu management
+- Order processing
+- RESTful API endpoints
+- MySQL database integration
 
+## Setup
+
+### Prerequisites
+- Node.js (v14+)
+- MySQL Server
+- npm or yarn
+
+### Installation
+
+1. Install dependencies:
 ```bash
-cd backend
 npm install
 ```
 
-### 2. Configure Environment Variables
-
-Create a `.env` file in the backend directory:
-
+2. Set up environment variables:
 ```bash
 cp .env.example .env
+# Edit .env with your database credentials
 ```
 
-Edit `.env` and configure your MySQL database:
-
-```env
-DATABASE_URL="mysql://username:password@localhost:3306/virtual_cafe"
-JWT_SECRET="your-secret-key-change-this-in-production"
-PORT=5000
-NODE_ENV=development
-```
-
-### 3. Setup MySQL Database
-
-Make sure MySQL is running and create a database:
-
-```sql
-CREATE DATABASE virtual_cafe;
-```
-
-### 4. Run Prisma Migrations
-
+3. Create database and tables:
 ```bash
-npm run prisma:generate
-npm run prisma:migrate
+mysql -u root -p < database.sql
 ```
 
-### 5. Start the Server
-
-Development mode with auto-reload:
+4. Start the server:
 ```bash
 npm run dev
 ```
 
-Production mode:
-```bash
-npm start
-```
-
-The server will run on `http://localhost:5000`
-
 ## API Endpoints
 
 ### Authentication
+- `POST /api/auth/register` - Register new user
+- `POST /api/auth/login` - User login
 
-#### Signup
-- **POST** `/api/auth/signup`
-- **Body**: 
-  ```json
-  {
-    "email": "user@example.com",
-    "password": "password123",
-    "name": "John Doe"
-  }
-  ```
+### Menu
+- `GET /api/menu` - Get all menu items
+- `GET /api/menu/:id` - Get specific menu item
+- `POST /api/menu` - Add menu item
 
-#### Signin
-- **POST** `/api/auth/signin`
-- **Body**: 
-  ```json
-  {
-    "email": "user@example.com",
-    "password": "password123"
-  }
-  ```
+### Orders
+- `POST /api/orders` - Create order (requires auth)
+- `GET /api/orders` - Get user orders (requires auth)
 
-#### Get Profile (Protected)
-- **GET** `/api/auth/profile`
-- **Headers**: `Authorization: Bearer <token>`
+### Health
+- `GET /api/health` - Server health check
 
-### Health Check
-- **GET** `/health`
+## Environment Variables
 
-## Project Structure
-
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=virtual_cafe
+JWT_SECRET=your_jwt_secret_key_here
 ```
-backend/
-├── config/
-│   └── database.js       # Prisma client configuration
-├── controllers/
-│   └── auth.controller.js # Authentication logic
-├── middleware/
-│   └── auth.middleware.js # JWT verification
-├── prisma/
-│   └── schema.prisma     # Database schema
-├── routes/
-│   └── auth.routes.js    # API routes
-├── .env.example          # Environment variables template
-├── .gitignore
-├── package.json
-└── server.js             # Express server setup
-```
-
-## Technologies Used
-
-- **Express.js** - Web framework
-- **Prisma** - ORM for MySQL
-- **MySQL** - Database
-- **JWT** - Token-based authentication
-- **bcrypt** - Password hashing
-- **cors** - Cross-origin resource sharing
-- **dotenv** - Environment variable management

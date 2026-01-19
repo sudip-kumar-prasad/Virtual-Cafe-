@@ -1,7 +1,7 @@
 {
   "name": "virtual-cafe",
   "version": "1.0.0",
-  "description": "Full-stack Virtual Cafe application with React frontend and Express/Prisma backend",
+  "description": "Full-stack Virtual Cafe application with React frontend and Express/MySQL backend",
   "private": true,
   "scripts": {
     "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
@@ -9,12 +9,11 @@
     "start:frontend": "cd frontend && npm start",
     "start:backend": "cd backend && npm run dev",
     "build:frontend": "cd frontend && npm run build",
-    "build:backend": "echo 'Backend does not require building'",
     "dev": "npm run start:backend & npm run start:frontend",
     "test:frontend": "cd frontend && npm test",
-    "test:backend": "cd backend && npm test"
+    "setup-db": "mysql -u root -p < backend/database.sql"
   },
-  "keywords": ["cafe", "restaurant", "react", "express", "prisma"],
+  "keywords": ["cafe", "restaurant", "react", "express", "mysql"],
   "author": "",
   "license": "ISC"
 }
