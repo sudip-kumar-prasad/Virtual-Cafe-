@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import menuItems from '../data/menuData';
 
 const HomePage = () => {
+  const { user } = useAuth();
   // Get some featured items (first 3 items from each category)
   const getCategoryItems = (category) => {
     return menuItems.filter(item => item.category === category).slice(0, 3);
@@ -10,7 +12,7 @@ const HomePage = () => {
 
   const featuredCoffee = getCategoryItems('coffee');
   const featuredPastries = getCategoryItems('pastry');
-  
+
   return (
     <div style={{ position: 'relative' }}>
       {/* Hero Section */}
@@ -29,37 +31,79 @@ const HomePage = () => {
         margin: 0,
         overflow: 'hidden'
       }}>
-        <div className="hero-content" style={{ 
+        <div className="hero-content" style={{
           maxWidth: '800px',
           position: 'relative',
           zIndex: 2
         }}>
-          <h1 style={{ 
-            color: 'white', 
+          <h1 style={{
+            color: 'white',
             marginBottom: 'var(--spacing-lg)',
             fontSize: '3.5rem',
             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)'
           }}>Welcome to Café Oasis</h1>
-          <p style={{ 
-            fontSize: '1.4rem', 
+          <p style={{
+            fontSize: '1.4rem',
             marginBottom: 'var(--spacing-xl)',
             textShadow: '1px 1px 2px rgba(0, 0, 0, 0.5)'
-          }}>Experience the joy of café life from anywhere. Fresh coffee, delicious food, cozy atmosphere.</p>
-          <Link to="/menu" className="btn" style={{ 
-            backgroundColor: 'var(--primary)',
-            color: 'white',
-            padding: 'var(--spacing-md) var(--spacing-xl)',
-            fontSize: '1.2rem',
-            textDecoration: 'none',
-            borderRadius: 'var(--radius-md)',
-            transition: 'background-color var(--transition-fast)',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-          }}>View Our Menu</Link>
+          }}>Experience the joy of café life from anywhere. Join us today to browse our exclusive menu.</p>
+
+          {!user ? (
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <Link to="/login" className="btn" style={{
+                backgroundColor: 'var(--primary)',
+                color: 'white',
+                padding: 'var(--spacing-md) var(--spacing-xl)',
+                fontSize: '1.2rem',
+                textDecoration: 'none',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+              }}>Login to Order</Link>
+            </div>
+          ) : (
+            <Link to="/dashboard" className="btn" style={{
+              backgroundColor: 'var(--primary)',
+              color: 'white',
+              padding: 'var(--spacing-md) var(--spacing-xl)',
+              fontSize: '1.2rem',
+              textDecoration: 'none',
+              borderRadius: 'var(--radius-md)',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            }}>Go to Dashboard</Link>
+          )}
         </div>
       </section>
 
+      {/* Join Community Section (Visible only when not logged in) */}
+      {!user && (
+        <section style={{
+          backgroundColor: 'var(--primary)',
+          color: 'white',
+          padding: 'var(--spacing-lg) 0',
+          textAlign: 'center'
+        }}>
+          <div className="container">
+            <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--spacing-md)' }}>Join Our Coffee Community</h2>
+            <p style={{ marginBottom: 'var(--spacing-lg)', maxWidth: '600px', margin: '0 auto var(--spacing-lg)' }}>
+              Create an account to track orders, save your favorite items, and get exclusive offers!
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+              <Link to="/login" className="btn" style={{
+                backgroundColor: 'white',
+                color: 'var(--primary)',
+                fontWeight: 'bold'
+              }}>Login</Link>
+              <Link to="/signup" className="btn btn-outline" style={{
+                borderColor: 'white',
+                color: 'white'
+              }}>Sign Up</Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Content Container */}
-      <div style={{ 
+      <div style={{
         position: 'relative',
         backgroundColor: 'white',
         zIndex: 2
@@ -87,17 +131,17 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        
+
         {/* About Section */}
-        <section className="section" style={{ 
+        <section className="section" style={{
           backgroundColor: 'var(--secondary)',
           padding: 'var(--spacing-xxl) 0'
         }}>
           <div className="container">
-            <div style={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
               gap: 'var(--spacing-xl)',
               background: 'var(--white)',
               borderRadius: 'var(--radius-lg)',
@@ -105,18 +149,18 @@ const HomePage = () => {
               boxShadow: '0 4px 6px var(--shadow)'
             }}>
               <div style={{ flex: '1 1 400px' }}>
-                <h2 style={{ 
+                <h2 style={{
                   fontSize: '2.5rem',
                   marginBottom: 'var(--spacing-md)',
                   color: 'var(--primary-dark)'
                 }}>Our Story</h2>
-                <p style={{ 
+                <p style={{
                   fontSize: '1.1rem',
                   lineHeight: '1.8',
                   color: 'var(--text-dark)',
                   marginBottom: 'var(--spacing-md)'
                 }}>Café Oasis started with a simple vision: to bring the cozy, inviting atmosphere of a neighborhood café to the digital world. We believe that enjoying quality coffee and food shouldn't be limited by location.</p>
-                <p style={{ 
+                <p style={{
                   fontSize: '1.1rem',
                   lineHeight: '1.8',
                   color: 'var(--text-dark)',
@@ -129,15 +173,15 @@ const HomePage = () => {
                   }}>Learn More About Us</Link>
                 </div>
               </div>
-              <div style={{ 
+              <div style={{
                 flex: '1 1 400px',
                 borderRadius: 'var(--radius-lg)',
                 overflow: 'hidden',
                 boxShadow: '0 6px 12px var(--shadow)'
               }}>
-                <img 
-                  src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&h=600" 
-                  alt="Café barista preparing coffee" 
+                <img
+                  src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&h=600"
+                  alt="Café barista preparing coffee"
                   style={{
                     width: '100%',
                     height: '100%',
@@ -150,7 +194,7 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Featured Pastries */}
         <section className="section" style={{ padding: 'var(--spacing-xxl) 0' }}>
           <div className="container">
@@ -174,15 +218,15 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Customer Testimonials */}
-        <section className="section" style={{ 
+        <section className="section" style={{
           backgroundColor: 'var(--secondary)',
           padding: 'var(--spacing-xxl) 0'
         }}>
           <div className="container">
             <h2 className="section-title" style={{ textAlign: 'center', marginBottom: 'var(--spacing-xl)' }}>What Our Customers Say</h2>
-            <div style={{ 
+            <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
               gap: 'var(--spacing-xl)',
@@ -195,21 +239,21 @@ const HomePage = () => {
                 borderRadius: 'var(--radius-lg)',
                 boxShadow: '0 4px 6px var(--shadow)'
               }}>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
                   marginBottom: 'var(--spacing-md)'
                 }}>
-                  <div style={{ 
-                    width: '50px', 
-                    height: '50px', 
-                    borderRadius: '50%', 
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
                     overflow: 'hidden',
                     marginRight: 'var(--spacing-md)'
                   }}>
-                    <img 
-                      src="https://randomuser.me/api/portraits/women/44.jpg" 
-                      alt="Customer" 
+                    <img
+                      src="https://randomuser.me/api/portraits/women/44.jpg"
+                      alt="Customer"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
@@ -218,7 +262,7 @@ const HomePage = () => {
                     <div style={{ color: 'var(--primary)' }}>★★★★★</div>
                   </div>
                 </div>
-                <p style={{ 
+                <p style={{
                   fontStyle: 'italic',
                   lineHeight: '1.6',
                   color: 'var(--text-dark)'
@@ -234,21 +278,21 @@ const HomePage = () => {
                 borderRadius: 'var(--radius-lg)',
                 boxShadow: '0 4px 6px var(--shadow)'
               }}>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
                   marginBottom: 'var(--spacing-md)'
                 }}>
-                  <div style={{ 
-                    width: '50px', 
-                    height: '50px', 
-                    borderRadius: '50%', 
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
                     overflow: 'hidden',
                     marginRight: 'var(--spacing-md)'
                   }}>
-                    <img 
-                      src="https://randomuser.me/api/portraits/men/32.jpg" 
-                      alt="Customer" 
+                    <img
+                      src="https://randomuser.me/api/portraits/men/32.jpg"
+                      alt="Customer"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
@@ -257,7 +301,7 @@ const HomePage = () => {
                     <div style={{ color: 'var(--primary)' }}>★★★★★</div>
                   </div>
                 </div>
-                <p style={{ 
+                <p style={{
                   fontStyle: 'italic',
                   lineHeight: '1.6',
                   color: 'var(--text-dark)'
@@ -273,21 +317,21 @@ const HomePage = () => {
                 borderRadius: 'var(--radius-lg)',
                 boxShadow: '0 4px 6px var(--shadow)'
               }}>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
                   marginBottom: 'var(--spacing-md)'
                 }}>
-                  <div style={{ 
-                    width: '50px', 
-                    height: '50px', 
-                    borderRadius: '50%', 
+                  <div style={{
+                    width: '50px',
+                    height: '50px',
+                    borderRadius: '50%',
                     overflow: 'hidden',
                     marginRight: 'var(--spacing-md)'
                   }}>
-                    <img 
-                      src="https://randomuser.me/api/portraits/women/68.jpg" 
-                      alt="Customer" 
+                    <img
+                      src="https://randomuser.me/api/portraits/women/68.jpg"
+                      alt="Customer"
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
@@ -296,7 +340,7 @@ const HomePage = () => {
                     <div style={{ color: 'var(--primary)' }}>★★★★★</div>
                   </div>
                 </div>
-                <p style={{ 
+                <p style={{
                   fontStyle: 'italic',
                   lineHeight: '1.6',
                   color: 'var(--text-dark)'
@@ -307,9 +351,9 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Call to Action */}
-        <section className="section" style={{ 
+        <section className="section" style={{
           backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://source.unsplash.com/featured/?coffeeshop)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',

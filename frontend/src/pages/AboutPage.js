@@ -72,6 +72,7 @@ const AboutPage = () => {
             }}>Our team consists of passionate coffee enthusiasts, skilled baristas, and tech experts who work together to create an authentic café experience online.</p>
           </div>
           
+          {/* Vision & Mission */}
           <div style={{ 
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
@@ -226,6 +227,7 @@ const AboutPage = () => {
             </div>
           </div>
           
+          {/* Team */}
           <div className="card" style={{ 
             marginBottom: '4rem',
             padding: '2.5rem',
@@ -351,7 +353,7 @@ const AboutPage = () => {
                 <p style={{ 
                   margin: '0.5rem 0',
                   lineHeight: '1.6'
-                }}>SN 210 Park Street<br />Café Town, CT 12345</p>
+                }}>123 Coffee Street<br />Café Town, CT 12345</p>
               </div>
               
               <div style={{
@@ -372,7 +374,7 @@ const AboutPage = () => {
                 <p style={{ 
                   margin: '0.5rem 0',
                   lineHeight: '1.6'
-                }}>Phone: (+91) 7767193931<br />Email: info@virtualcafe.com</p>
+                }}>Phone: (123) 456-7890<br />Email: info@virtualcafe.com</p>
               </div>
               
               <div style={{
