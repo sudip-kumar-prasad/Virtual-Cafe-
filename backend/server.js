@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -59,3 +60,44 @@ app.use(errorHandler);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+=======
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const authRoutes = require('./src/routes/auth');
+const menuRoutes = require('./src/routes/menu');
+const orderRoutes = require('./src/routes/orders');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// CORS configuration for production
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [
+        'https://virtual-cafe-z3nd-7o1p578yi-sudip-kumars-projects-8f5cb1b4.vercel.app',
+        'https://virtual-cafe-v7rt-q4n0ah8xe-sudip-kumars-projects-8f5cb1b4.vercel.app'
+      ] 
+    : ['http://localhost:3000'],
+  credentials: true
+};
+
+// Middleware
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'Virtual Cafe API is running!' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+>>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50

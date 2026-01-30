@@ -1,70 +1,245 @@
-# Getting Started with Create React App
+<<<<<<< HEAD
+# Virtual Cafe - Full Stack Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern full-stack cafe management application with React frontend and Express.js/MySQL backend.
+
+## Project Structure
+
+```
+Virtual-Cafe-/
+├── frontend/              # React frontend application
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   └── README.md
+├── backend/              # Express.js + MySQL backend
+│   ├── src/
+│   ├── database.sql
+│   ├── package.json
+│   └── README.md
+├── package.json          # Root workspace scripts
+└── README.md             # This file
+```
+
+## Quick Start
+
+### Prerequisites
+- Node.js (v14 or higher)
+- MySQL Server (v5.7 or higher)
+- npm or yarn
+
+### Installation
+
+1. Install all dependencies:
+```bash
+npm run install-all
+```
+
+2. Set up database:
+```bash
+# Create database and tables
+npm run setup-db
+```
+
+3. Configure environment variables:
+
+**Backend (.env)**
+```bash
+cd backend
+cp .env.example .env
+# Edit .env with your MySQL credentials
+```
+
+**Frontend (.env)**
+```bash
+cd frontend
+# .env already created with API URL
+```
+
+### Running the Application
+
+**Development Mode** (runs both frontend and backend):
+```bash
+npm run dev
+```
+
+**Frontend Only:**
+```bash
+npm run start:frontend
+```
+
+**Backend Only:**
+```bash
+npm run start:backend
+```
+
+## Tech Stack
+
+### Frontend
+=======
+# Virtual Cafe - Frontend
+
+A modern React-based cafe management frontend application with local storage for data persistence.
+
+## Features
+
+- User authentication (localStorage-based)
+- Menu browsing
+- Shopping cart functionality
+- User profile management
+- Responsive UI
+- No backend required
+
+## Tech Stack
+
+>>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
+- React 18
+- React Router DOM
+- React Hook Form
+- Lucide React Icons
+- CSS3
+<<<<<<< HEAD
+
+### Backend
+- Express.js 4
+- MySQL 8
+- JWT Authentication
+- bcryptjs (Password hashing)
+- CORS
+
+## Features
+
+- User authentication (register/login)
+- Menu browsing with database
+- Shopping cart functionality
+- Order management
+- User profile management
+- Responsive UI
+- RESTful API
+
+## API Endpoints
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `GET /api/menu` - Get menu items
+- `POST /api/orders` - Create order
+- `GET /api/orders` - Get user orders
+- `GET /api/health` - Health check
+
+## Database Schema
+
+- **users** - User accounts
+- **menu_items** - Cafe menu items
+- **orders** - Customer orders
+- **order_items** - Order line items
+
+## Development
+
+1. **Start MySQL server**
+2. **Run database setup:**
+   ```bash
+   npm run setup-db
+   ```
+3. **Start development servers:**
+   ```bash
+   npm run dev
+   ```
+
+Frontend: http://localhost:3000
+Backend: http://localhost:5000
+=======
+- Local Storage for data persistence
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+npm start
+```
+
+3. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 ## Available Scripts
 
-In the project directory, you can run:
+- `npm start` - Runs the app in development mode
+- `npm run build` - Builds the app for production
+- `npm test` - Launches the test runner
+- `npm run eject` - Ejects from Create React App (one-way operation)
 
-### `npm start`
+## Project Structure
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # Basic UI components
+│   ├── CartItem.js     # Shopping cart item
+│   ├── Footer.js       # Footer component
+│   ├── MenuItem.jsx    # Menu item display
+│   └── Navbar.js       # Navigation bar
+├── context/            # React context providers
+│   ├── AuthContext.js  # Authentication state
+│   └── CartContext.js  # Shopping cart state
+├── data/               # Static data
+│   └── menuData.js     # Menu items data
+├── hooks/              # Custom React hooks
+│   └── useAuth.js      # Authentication hook
+├── pages/              # Page components
+│   ├── AboutPage.js    # About page
+│   ├── CartPage.js     # Shopping cart page
+│   ├── ContactPage.jsx # Contact page
+│   ├── HomePage.js     # Home page
+│   ├── MenuPage.js     # Menu page
+│   ├── SigninPage.js   # Sign in page
+│   └── SignupPage.js   # Sign up page
+├── App.jsx             # Main app component
+├── index.css           # Global styles
+└── index.js            # App entry point
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Authentication
 
-### `npm test`
+The app uses localStorage for user authentication simulation:
+- Sign up creates a user record in localStorage
+- Sign in checks localStorage for existing user
+- User data persists across browser sessions
+- No server or database required
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Data Storage
 
-### `npm run build`
+All data is stored locally in the browser:
+- User authentication data
+- Shopping cart contents
+- Menu data (static)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Building for Production
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm run build
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Builds the app for production to the `build` folder. The build is minified and optimized for best performance.
 
-### `npm run eject`
+## Deployment
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The app can be deployed to any static hosting service:
+- Netlify
+- Vercel
+- GitHub Pages
+- AWS S3
+- Any web server
+>>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## License
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+ISC
