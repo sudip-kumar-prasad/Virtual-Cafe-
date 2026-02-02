@@ -1,10 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import MenuItem from '../components/MenuItem';
-import menuItems from '../data/menuData';
+import apiService from '../services/api'; // Import our API service
 
 const MenuPage = () => {
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [foodFilter, setFoodFilter] = useState('all');
+
+  // Fetch menu items from the backend when the page loads
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const response = await apiService.getMenuItems();
+        // The API returns { success: true, count: ..., data: [...] } if following standard
+        // Or just array. Let's assume response.data.data based on typical structure, or response.data if direct array.
+        // Looking at api.js (Step 118) -> getMenuItems: () => fetch(...).then(res => res.json())
+        // Looking at menuController.js (Step 116) -> res.json({ success: true, count: ..., data: menuItems })
+        setMenuItems(response.data || []);
+      } catch (err) {
+        console.error("Failed to load menu:", err);
+        setError("Failed to load menu items. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMenu();
+  }, []);
 
   const categories = [
     { id: 'all', name: 'All Items' },
@@ -26,6 +50,9 @@ const MenuPage = () => {
       }
       return item.category === activeCategory;
     });
+
+  if (loading) return <div className="text-center section"><p>Loading menu...</p></div>;
+  if (error) return <div className="text-center section"><p className="error-text">{error}</p></div>;
 
   return (
     <div className="section" style={{ paddingBottom: 'var(--spacing-xxl)' }}>
@@ -89,7 +116,7 @@ const MenuPage = () => {
         {/* Menu Items */}
         <div className="menu-grid">
           {filteredItems.map(item => (
-            <MenuItem key={item.id} item={item} />
+            <MenuItem key={item._id} item={item} />
           ))}
         </div>
 

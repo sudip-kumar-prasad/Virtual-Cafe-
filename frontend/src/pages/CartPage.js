@@ -1,15 +1,66 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import apiService from '../services/api';
 import CartItem from '../components/CartItem';
 
 const CartPage = () => {
   const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleCheckout = () => {
-    // In a real app, this would process payment first
-    clearCart();
-    navigate('/order-success');
+  // Handle the checkout process
+  const handleCheckout = async () => {
+    try {
+      // 1. Start loading state (disable button, show spinner/text)
+      setLoading(true);
+      setError(null);
+
+      // Helper to validate MongoDB ObjectIds
+      const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
+      const validItems = cartItems.filter(item => isValidObjectId(item._id || item.id));
+
+      if (validItems.length === 0) {
+        throw new Error("Your cart contains invalid items. Please clear your cart and add fresh items.");
+      }
+
+      // 2. Prepare the order data to send to the backend
+      const orderData = {
+        // Map cart items to the format the API expects (ID and Quantity)
+        items: validItems.map(item => ({
+          id: item._id || item.id, // Ensure we have the correct ID
+          quantity: item.quantity
+        })),
+        totalAmount: cartTotal, // Total price calculated in context
+        // Customer details from the logged-in user
+        customerInfo: {
+          name: user?.name,
+          email: user?.email,
+          ...(user?.phone && { phone: user.phone }) // Only include phone if it exists
+        },
+        orderType: 'takeaway' // Hardcoded for now, could be a dropdown later
+      };
+
+      // 3. Send the request to the server
+      await apiService.createOrder(orderData);
+
+      // 4. If successful, clear the local cart
+      clearCart();
+
+      // 5. Navigate to the success page
+      navigate('/order-success');
+    } catch (err) {
+      // 6. If request fails, log and show error
+      console.error("Checkout error:", err);
+      setError(err.message || "Failed to place order. Please try again.");
+    } finally {
+      // 7. Always turn off loading state, whether success or fail
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,6 +80,18 @@ const CartPage = () => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: 'var(--spacing-xl)'
           }}>
+            {error && (
+              <div style={{
+                gridColumn: '1 / -1',
+                padding: '1rem',
+                backgroundColor: '#fee2e2',
+                color: '#dc2626',
+                borderRadius: '8px',
+                marginBottom: '1rem'
+              }}>
+                {error}
+              </div>
+            )}
             <div className="cart-items">
               <h2>Cart Items</h2>
               {cartItems.map(item => (
@@ -73,8 +136,13 @@ const CartPage = () => {
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
 
-                <button className="btn" style={{ width: '100%' }} onClick={handleCheckout}>
-                  Proceed to Checkout
+                <button
+                  className="btn"
+                  style={{ width: '100%' }}
+                  onClick={handleCheckout}
+                  disabled={loading}
+                >
+                  {loading ? 'Processing...' : 'Proceed to Checkout'}
                 </button>
               </div>
             </div>

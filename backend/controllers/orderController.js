@@ -47,7 +47,8 @@ const createOrder = asyncHandler(async (req, res) => {
         totalAmount,
         customerInfo,
         orderType: orderType || 'takeaway',
-        notes: notes || ''
+        notes: notes || '',
+        user: req.user ? req.user._id : null
     });
 
     res.status(201).json({
@@ -74,6 +75,22 @@ const getOrderByNumber = asyncHandler(async (req, res) => {
     res.json({
         success: true,
         data: order
+    });
+});
+
+// @desc    Get logged in user orders
+// @route   GET /api/orders/myorders
+// @access  Private
+const getMyOrders = asyncHandler(async (req, res) => {
+    // 1. req.user._id comes from the auth middleware (protect function)
+    // 2. Find all orders where the 'user' field matches this ID
+    // 3. .sort({ createdAt: -1 }) sorts the results to show newest orders first
+    const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+
+    // 4. Return the list of orders to the frontend
+    res.json({
+        success: true,
+        data: orders
     });
 });
 
@@ -113,5 +130,6 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 module.exports = {
     createOrder,
     getOrderByNumber,
+    getMyOrders,
     updateOrderStatus
 };

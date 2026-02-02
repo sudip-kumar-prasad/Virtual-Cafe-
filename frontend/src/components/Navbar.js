@@ -40,6 +40,7 @@ const Navbar = () => {
             {user && (
               <>
                 <li><Link to="/dashboard" onClick={closeMenu}>Dashboard</Link></li>
+                <li><Link to="/orders" onClick={closeMenu}>My Orders</Link></li>
                 <li><Link to="/menu" onClick={closeMenu}>Menu</Link></li>
                 <li><Link to="/about" onClick={closeMenu}>About</Link></li>
                 <li><Link to="/contact" onClick={closeMenu}>Contact</Link></li>

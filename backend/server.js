@@ -1,10 +1,9 @@
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const { errorHandler, notFound } = require('./middleware/errorHandler');
+// --- 1. Import necessary libraries ---
+const express = require('express'); // The web framework
+const dotenv = require('dotenv').config(); // Load environment variables from .env file
+const mongoose = require('mongoose'); // Interface to MongoDB
+const cors = require('cors'); // Allow requests from our Frontend
+const { errorHandler, notFound } = require('./middleware/errorHandler'); // Custom error handling
 
 // Route imports
 const menuRoutes = require('./routes/menuRoutes');
@@ -12,20 +11,22 @@ const orderRoutes = require('./routes/orderRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const authRoutes = require('./routes/authRoutes');
 
+// --- 2. Initialize the application ---
+// Check if we provided a port in .env, otherwise use 5001
+const port = process.env.PORT || 5001;
+
+// Connect to the Database
+// (Note: MongoDB connection string must be valid in .env)
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected successfully'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+
+// Create the Express app instance
 const app = express();
-const PORT = process.env.PORT || 5001;
 
-// Security Middleware
-app.use(helmet());
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use(limiter);
+// --- 3. Middleware Setup ---
+// These run before our route handlers
 
 // CORS configuration
 const corsOptions = {
@@ -42,13 +43,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// MongoDB Connection
-const MONGO_URI = process.env.MONGO_URI;
-
-mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
 app.use('/api/menu', menuRoutes);
@@ -69,6 +63,6 @@ app.get('/api/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

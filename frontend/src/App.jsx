@@ -12,6 +12,8 @@ import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
+import OrderSuccessPage from './pages/OrderSuccessPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotFound from './pages/NotFound';
 import './index.css';
@@ -46,6 +48,16 @@ const App = () => {
                 <Route path="/cart" element={
                   <ProtectedRoute>
                     <CartPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/order-success" element={
+                  <ProtectedRoute>
+                    <OrderSuccessPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/orders" element={
+                  <ProtectedRoute>
+                    <OrderHistoryPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/about" element={<AboutPage />} />

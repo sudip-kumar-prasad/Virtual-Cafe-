@@ -40,7 +40,7 @@ const validateOrder = [
         .normalizeEmail()
         .withMessage('Valid email is required'),
     body('customerInfo.phone')
-        .optional()
+        .optional({ checkFalsy: true })
         .trim()
         .matches(/^[0-9+\s()-]+$/)
         .withMessage('Invalid phone number format'),

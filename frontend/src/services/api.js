@@ -59,8 +59,8 @@ class ApiService {
     });
   }
 
-  async getUserOrders() {
-    return this.request('/orders');
+  async getMyOrders() {
+    return this.request('/orders/myorders');
   }
 
   // Health check

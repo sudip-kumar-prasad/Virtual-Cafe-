@@ -61,6 +61,11 @@ const orderSchema = new mongoose.Schema({
             trim: true
         }
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false
+    },
     status: {
         type: String,
         enum: ['pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled'],
