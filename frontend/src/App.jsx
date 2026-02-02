@@ -9,15 +9,10 @@ import MenuPage from './pages/MenuPage';
 import CartPage from './pages/CartPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
-<<<<<<< HEAD
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import ProtectedRoute from './components/ProtectedRoute';
-=======
-import SigninPage from './pages/SigninPage';
-import SignupPage from './pages/SignupPage';
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
 import NotFound from './pages/NotFound';
 import './index.css';
 
@@ -26,7 +21,6 @@ const App = () => {
     <Router>
       <AuthProvider>
         <CartProvider>
-<<<<<<< HEAD
           <div className="app" style={{
             display: 'flex',
             flexDirection: 'column',
@@ -34,21 +28,11 @@ const App = () => {
           }}>
             <Navbar />
             <main className="main-content" style={{
-=======
-          <div className="app" style={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            minHeight: '100vh' 
-          }}>
-            <Navbar />
-            <main className="main-content" style={{ 
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
               flex: 1,
               padding: '2rem 0'
             }}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
-<<<<<<< HEAD
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <DashboardPage />
@@ -71,13 +55,6 @@ const App = () => {
                   </ProtectedRoute>
                 } />
                 <Route path="/login" element={<LoginPage />} />
-=======
-                <Route path="/menu" element={<MenuPage />} />
-                <Route path="/cart" element={<CartPage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/signin" element={<SigninPage />} />
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
@@ -90,8 +67,4 @@ const App = () => {
   );
 };
 
-<<<<<<< HEAD
 export default App;
-=======
-export default App;
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50

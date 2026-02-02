@@ -1,25 +1,17 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-<<<<<<< HEAD
 import { useCart } from '../context/CartContext';
 import './Navbar.css';
-=======
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
-<<<<<<< HEAD
   const { cartItems } = useCart();
   const navigate = useNavigate();
 
   const cartCount = cartItems ? cartItems.reduce((acc, item) => acc + item.quantity, 0) : 0;
 
-=======
-  const navigate = useNavigate();
-
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -30,7 +22,6 @@ const Navbar = () => {
     navigate('/');
   };
 
-<<<<<<< HEAD
   const closeMenu = () => setIsMenuOpen(false);
 
   return (
@@ -78,7 +69,7 @@ const Navbar = () => {
             {user ? (
               <>
                 <li className="nav-user-welcome" style={{ display: 'flex', alignItems: 'center', color: 'var(--primary)', fontWeight: 'bold' }}>
-                  Hi, {user.name.split(' ')[0]}
+                  Hi, {user.name ? user.name.split(' ')[0] : 'User'}
                 </li>
                 <li>
                   <button
@@ -116,45 +107,8 @@ const Navbar = () => {
           </ul>
         </nav>
       </div>
-=======
-  return (
-    <header className="header">
-      <nav className="nav container">
-        <Link to="/" className="nav-logo">Café Oasis</Link>
-        
-        <button className="menu-toggle" onClick={toggleMenu}>
-          ☰
-        </button>
-        
-        <ul className={`nav-links ${isMenuOpen ? 'active' : ''}`}>
-          <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
-          <li><Link to="/menu" onClick={() => setIsMenuOpen(false)}>Menu</Link></li>
-          <li><Link to="/cart" onClick={() => setIsMenuOpen(false)}>Cart</Link></li>
-          <li><Link to="/about" onClick={() => setIsMenuOpen(false)}>About</Link></li>
-          <li><Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
-        </ul>
-        
-        <div className="auth-links">
-          {user ? (
-            <>
-              <span className="user-name">Hi, {user.name}</span>
-              <button className="logout-btn" onClick={handleLogout}>Logout</button>
-            </>
-          ) : (
-            <>
-              <Link to="/signin" className="signin-btn" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
-              <Link to="/signup" className="signup-btn" onClick={() => setIsMenuOpen(false)}>Sign Up</Link>
-            </>
-          )}
-        </div>
-      </nav>
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
     </header>
   );
 };
 
-<<<<<<< HEAD
 export default Navbar;
-=======
-export default Navbar;
->>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50
