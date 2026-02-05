@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import apiService from '../services/api';
 
 /** 1. AUTH CONNECTION
  * We import the 'useAuth' hook so we can greet the user by name.
@@ -18,6 +19,30 @@ import './DashboardPage.css';
 const DashboardPage = () => {
     // We get the user data from our global Auth system
     const { user } = useAuth();
+    const [orders, setOrders] = React.useState([]);
+    const [points, setPoints] = React.useState(0);
+    const [loading, setLoading] = React.useState(true);
+
+    // Fetch orders to calculate dynamic points
+    React.useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await apiService.getMyOrders();
+                if (response.success) {
+                    const fetchedOrders = response.data;
+                    setOrders(fetchedOrders);
+                    const earned = fetchedOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
+                    const spent = fetchedOrders.reduce((sum, order) => sum + (order.pointsUsed || 0), 0);
+                    setPoints(Math.floor(earned) - spent);
+                }
+            } catch (err) {
+                console.error('Error fetching dashboard data:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchOrders();
+    }, []);
 
     // A friendly way to get just the first name (e.g., "Good morning, Sudip")
     const firstName = user ? user.name.split(' ')[0] : 'Member';
@@ -60,8 +85,12 @@ const DashboardPage = () => {
                         />
                         <div className="membership-details">
                             <h2>Gold Member Status</h2>
-                            <p>You have earned <span className="points-count">450</span> Oasis Points</p>
-                            <small>Only 50 points until your next free latte!</small>
+                            <p>You have earned <span className="points-count">{loading ? '...' : points}</span> Oasis Points</p>
+                            <small>
+                                {points >= 100
+                                    ? "🎉 Reward Unlocked! Head to Profile to claim."
+                                    : `Only ${100 - points} points until your next free roast!`}
+                            </small>
                         </div>
                     </div>
 
@@ -121,7 +150,7 @@ const DashboardPage = () => {
                         </div>
                     </div>
 
-                    <Link to="/orders" className="view-all-link">View Order History →</Link>
+                    <Link to="/profile" className="view-all-link">View My Profile & History →</Link>
                 </aside>
 
             </div>

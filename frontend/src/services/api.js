@@ -63,6 +63,11 @@ class ApiService {
     return this.request('/orders/myorders');
   }
 
+  // Alias for compatibility with different parts of the UI
+  async getUserOrders() {
+    return this.getMyOrders();
+  }
+
   // Health check
   async healthCheck() {
     return this.request('/health');

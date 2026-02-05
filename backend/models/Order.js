@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const orderItemSchema = new mongoose.Schema({
     menuItem: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'MenuItem',
+        type: String, // Changed to String to support special reward IDs
         required: true
     },
     name: {
@@ -42,6 +41,10 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
+    },
+    pointsUsed: {
+        type: Number,
+        default: 0
     },
     customerInfo: {
         name: {

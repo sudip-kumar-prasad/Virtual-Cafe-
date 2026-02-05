@@ -12,9 +12,8 @@ import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
-import OrdersPage from './pages/OrdersPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
-import OrderHistoryPage from './pages/OrderHistoryPage';
+import ProfilePage from './pages/ProfilePage';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
@@ -56,9 +55,9 @@ const App = () => {
                     <OrderSuccessPage />
                   </ProtectedRoute>
                 } />
-                <Route path="/orders" element={
+                <Route path="/profile" element={
                   <ProtectedRoute>
-                    <OrderHistoryPage />
+                    <ProfilePage />
                   </ProtectedRoute>
                 } />
                 <Route path="/about" element={<AboutPage />} />

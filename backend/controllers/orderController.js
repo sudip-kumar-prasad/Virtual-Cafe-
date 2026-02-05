@@ -9,21 +9,50 @@ const { generateOrderNumber, validateOrderTotal } = require('../utils/orderUtils
 const createOrder = asyncHandler(async (req, res) => {
     const { items, customerInfo, totalAmount, orderType, notes } = req.body;
 
+    // REWARD CONFIGURATION
+    const REWARD_MAP = {
+        'reward-muffin-50': { name: '🎁 Free Muffin', cost: 50, image: '/assets/menu/muffin.png' },
+        'reward-oasis-roast-100': { name: '🎁 Free Oasis Roast', cost: 100, image: '/assets/menu/oasis-roast.png' },
+        'reward-latte-150': { name: '🎁 Free Sig. Latte', cost: 150, image: '/assets/menu/latte.png' },
+        // Legacy support
+        'reward-oasis-roast': { name: '🎁 Free Oasis Roast', cost: 100, image: '/assets/menu/oasis-roast.png' }
+    };
+
     // Verify all menu items exist and are available
-    const menuItemIds = items.map(item => item.id);
+    // FILTER OUT REWARDS: We don't look them up in the DB
+    const standardItems = items.filter(item => !REWARD_MAP[item.id]);
+    const rewardItems = items.filter(item => REWARD_MAP[item.id]);
+
+    const menuItemIds = standardItems.map(item => item.id);
     const menuItems = await MenuItem.find({
         _id: { $in: menuItemIds },
         isAvailable: true
     });
 
-    if (menuItems.length !== items.length) {
+    if (menuItems.length !== standardItems.length) {
         const error = new Error('Some menu items are not available or do not exist');
         error.statusCode = 400;
         throw error;
     }
 
+    // Calculate points used
+    let pointsUsed = 0;
+
     // Build order items with current prices from database
     const orderItems = items.map(item => {
+        // CASE A: It's a special reward item
+        if (REWARD_MAP[item.id]) {
+            const reward = REWARD_MAP[item.id];
+            pointsUsed += (reward.cost * item.quantity);
+            return {
+                menuItem: item.id,
+                name: reward.name,
+                price: 0,
+                quantity: item.quantity
+            };
+        }
+
+        // CASE B: Standard menu item
         const menuItem = menuItems.find(mi => mi._id.toString() === item.id);
         return {
             menuItem: menuItem._id,
@@ -32,6 +61,29 @@ const createOrder = asyncHandler(async (req, res) => {
             quantity: item.quantity
         };
     });
+
+    // POINT BALANCE VALIDATION
+    if (pointsUsed > 0) {
+        // If user is guest, they can't use points (though frontend shouldn't allow this)
+        if (!req.user) {
+            const error = new Error('Guest users cannot use loyalty points');
+            error.statusCode = 401;
+            throw error;
+        }
+
+        // Fetch user's history to calculate balance
+        const pastOrders = await Order.find({ user: req.user._id });
+
+        const totalEarned = pastOrders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+        const totalSpent = pastOrders.reduce((sum, o) => sum + (o.pointsUsed || 0), 0);
+        const currentBalance = Math.floor(totalEarned) - totalSpent;
+
+        if (currentBalance < pointsUsed) {
+            const error = new Error(`Insufficient loyalty points. You have ${currentBalance} but this order requires ${pointsUsed}.`);
+            error.statusCode = 400;
+            throw error;
+        }
+    }
 
     // Validate total amount
     if (!validateOrderTotal(orderItems, totalAmount)) {
@@ -45,6 +97,7 @@ const createOrder = asyncHandler(async (req, res) => {
         orderNumber: generateOrderNumber(),
         items: orderItems,
         totalAmount,
+        pointsUsed, // Save the points spent
         customerInfo,
         orderType: orderType || 'takeaway',
         notes: notes || '',

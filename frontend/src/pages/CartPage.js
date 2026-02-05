@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import apiService from '../services/api';
 import './CartPage.css';
 
 const CartPage = () => {
   const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { user } = useAuth(); // We need the user to know who is placing the order
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -13,30 +15,38 @@ const CartPage = () => {
   const handleCheckout = async () => {
     try {
       setLoading(true);
-      // 3. We create a simple object to represent the order
-      // In a real app, this would be sent to a backend server.
+
+      // 3. Prepare the real order data for our backend
+      // We map our cart items to match what the server expects (id and quantity)
       const orderData = {
-        items: cartItems,
+        items: cartItems.map(item => ({
+          id: item.id || item._id,
+          quantity: item.quantity
+        })),
         totalAmount: cartTotal,
-        orderDate: new Date().toISOString()
+        customerInfo: {
+          name: user ? user.name : 'Guest',
+          email: user ? user.email : 'guest@example.com'
+        }
       };
 
       console.log('Sending order to server...', orderData);
 
-      // 4. Simulate a short wait (mimicking server response time)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // 4. CALL THE ACTUAL API!
+      // This sends the data to our Node.js server to be saved in the database.
+      await apiService.createOrder(orderData);
 
       // 5. Success! Clear the cart and tell the user.
       clearCart();
       alert('Success! Your order has been placed. Enjoy your Café Oasis experience!');
 
-      // 6. Send the user to the Dashboard to see their orders (mockup)
+      // 6. Send the user to the Dashboard to see their orders
       navigate('/dashboard');
 
     } catch (error) {
-      // 7. Error Handling: Always prepare for things to go wrong!
+      // 7. Error Handling: Always prepare for things to go wrong (like network issues)!
       console.error('Checkout failed:', error);
-      alert('Oops! Something went wrong while placing your order. Please try again.');
+      alert(`Oops! Something went wrong: ${error.message}`);
     } finally {
       // 8. Stop the loading state regardless of success or failure
       setLoading(false);

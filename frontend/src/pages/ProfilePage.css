@@ -1,0 +1,329 @@
+/* --- Member Profile Page Styling --- */
+
+.profile-page-wrapper {
+    background-color: var(--secondary-light);
+    /* AntiqueWhite */
+    min-height: 90vh;
+    padding: var(--spacing-xxl) 0;
+}
+
+/* PROFILE HEADER */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xl);
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px var(--shadow);
+    margin-bottom: var(--spacing-xl);
+}
+
+.profile-badge-large {
+    width: 100px;
+    height: 100px;
+    background: var(--primary);
+    /* Sienna */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: 700;
+    box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+}
+
+.profile-user-info h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: var(--text-dark);
+}
+
+.profile-email {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-top: 5px;
+}
+
+.member-tier-badge {
+    display: inline-block;
+    background: #FFD700;
+    color: #4b2e2e;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+/* LOYALTY CARD */
+.loyalty-card {
+    background: linear-gradient(135deg, white 0%, #fffbf2 100%);
+    border: 2px solid var(--accent);
+    /* Light Gold-ish */
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+}
+
+.points-display {
+    padding: var(--spacing-md) 0;
+}
+
+.points-number {
+    display: block;
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.points-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* REWARDS MENU */
+.rewards-menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.reward-tier-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.reward-tier-item.locked {
+    opacity: 0.6;
+    background: #f5f5f5;
+    border-style: dashed;
+}
+
+.reward-tier-item.unlocked {
+    border-color: var(--primary);
+    background: #fffbf2;
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.1);
+}
+
+.tier-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.cost-badge {
+    font-size: 0.8rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.claim-mini-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.unlocked .claim-mini-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.unlocked .claim-mini-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.locked .claim-mini-btn {
+    background: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* MAIN GRID */
+.profile-main-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--spacing-xl);
+}
+
+/* SIDEBAR CARD */
+.sidebar-card {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.sidebar-card h3 {
+    border-bottom: 2px solid var(--secondary-light);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.25rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f9f9f9;
+}
+
+.stat-item .label {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.stat-item .value {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* PROFILE CONTENT AREA */
+.profile-content h2.section-title-inline {
+    margin-bottom: var(--spacing-lg);
+    color: var(--primary);
+    position: relative;
+    display: inline-block;
+}
+
+.profile-content h2.section-title-inline::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+}
+
+/* ORDERS LIST */
+.profile-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.profile-order-card {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    box-shadow: 0 2px 10px var(--shadow);
+    border-left: 4px solid var(--primary);
+    transition: transform 0.2s ease;
+}
+
+.profile-order-card:hover {
+    transform: translateX(5px);
+}
+
+.order-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.order-meta h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-dark);
+}
+
+.order-meta span {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid;
+}
+
+.order-body-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed #eee;
+}
+
+.order-items-minimal {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.order-total-minimal {
+    font-weight: 600;
+}
+
+.order-total-minimal span {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+/* STATUS BOXES */
+.profile-status-box {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    text-align: center;
+}
+
+/* LOADER */
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+    .profile-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
