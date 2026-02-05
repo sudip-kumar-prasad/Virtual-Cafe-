@@ -1,38 +1,65 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import apiService from '../services/api';
 import CartItem from '../components/CartItem';
 
 const CartPage = () => {
   const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const { user } = useAuth();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Handle the checkout process
   const handleCheckout = async () => {
-    if (cartItems.length === 0) return;
-
-    setIsProcessing(true);
-    setError('');
-
     try {
-      await apiService.createOrder({
-        items: cartItems,
-        total: cartTotal
-      });
+      // 1. Start loading state (disable button, show spinner/text)
+      setLoading(true);
+      setError(null);
 
+      // Helper to validate MongoDB ObjectIds
+      const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
+
+      const validItems = cartItems.filter(item => isValidObjectId(item._id || item.id));
+
+      if (validItems.length === 0) {
+        throw new Error("Your cart contains invalid items. Please clear your cart and add fresh items.");
+      }
+
+      // 2. Prepare the order data to send to the backend
+      const orderData = {
+        // Map cart items to the format the API expects (ID and Quantity)
+        items: validItems.map(item => ({
+          id: item._id || item.id, // Ensure we have the correct ID
+          quantity: item.quantity
+        })),
+        totalAmount: cartTotal, // Total price calculated in context
+        // Customer details from the logged-in user
+        customerInfo: {
+          name: user?.name,
+          email: user?.email,
+          ...(user?.phone && { phone: user.phone }) // Only include phone if it exists
+        },
+        orderType: 'takeaway' // Hardcoded for now, could be a dropdown later
+      };
+
+      // 3. Send the request to the server
+      await apiService.createOrder(orderData);
+
+      // 4. If successful, clear the local cart
       clearCart();
-      setOrderSuccess(true);
-      // Wait a bit then redirect to orders
-      setTimeout(() => {
-        navigate('/orders');
-      }, 3000);
+
+      // 5. Navigate to the success page
+      navigate('/order-success');
     } catch (err) {
-      setError(err.message || 'Failed to place order. Please try again.');
+      // 6. If request fails, log and show error
+      console.error("Checkout error:", err);
+      setError(err.message || "Failed to place order. Please try again.");
     } finally {
-      setIsProcessing(false);
+      // 7. Always turn off loading state, whether success or fail
+      setLoading(false);
     }
   };
 
@@ -41,21 +68,7 @@ const CartPage = () => {
       <div className="container">
         <h1 className="section-title">Your Cart</h1>
 
-        {orderSuccess ? (
-          <div className="order-success" style={{
-            textAlign: 'center',
-            marginTop: 'var(--spacing-xxl)',
-            padding: 'var(--spacing-xl)',
-            background: 'rgba(76, 175, 80, 0.1)',
-            borderRadius: 'var(--border-radius-lg)',
-            border: '1px solid #4CAF50'
-          }}>
-            <h2 style={{ color: '#4CAF50' }}>Order Successful!</h2>
-            <p style={{ marginBottom: 'var(--spacing-lg)' }}>Thank you for your order. We are preparing it now!</p>
-            <p>Redirecting to your order history...</p>
-            <Link to="/orders" className="btn" style={{ marginTop: 'var(--spacing-md)' }}>View Orders Now</Link>
-          </div>
-        ) : cartItems.length === 0 ? (
+        {cartItems.length === 0 ? (
           <div className="empty-cart" style={{ textAlign: 'center', marginTop: 'var(--spacing-xxl)' }}>
             <h2>Your cart is empty</h2>
             <p style={{ marginBottom: 'var(--spacing-lg)' }}>Add some delicious items from our menu!</p>
@@ -67,6 +80,18 @@ const CartPage = () => {
             gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: 'var(--spacing-xl)'
           }}>
+            {error && (
+              <div style={{
+                gridColumn: '1 / -1',
+                padding: '1rem',
+                backgroundColor: '#fee2e2',
+                color: '#dc2626',
+                borderRadius: '8px',
+                marginBottom: '1rem'
+              }}>
+                {error}
+              </div>
+            )}
             <div className="cart-items">
               <h2>Cart Items</h2>
               {cartItems.map(item => (
@@ -79,23 +104,13 @@ const CartPage = () => {
               ))}
 
               <div style={{ marginTop: 'var(--spacing-lg)' }}>
-                <button className="btn btn-secondary" onClick={clearCart} disabled={isProcessing}>Clear Cart</button>
+                <button className="btn btn-secondary" onClick={clearCart} disabled={loading}>Clear Cart</button>
               </div>
             </div>
 
             <div className="cart-summary">
               <div className="card">
                 <h2 style={{ marginTop: 0 }}>Order Summary</h2>
-
-                {error && (
-                  <div className="error-message" style={{
-                    color: 'red',
-                    marginBottom: 'var(--spacing-md)',
-                    fontSize: '0.9rem'
-                  }}>
-                    {error}
-                  </div>
-                )}
 
                 <div className="cart-summary-items" style={{ marginBottom: 'var(--spacing-lg)' }}>
                   {cartItems.map(item => (
@@ -125,9 +140,9 @@ const CartPage = () => {
                   className="btn"
                   style={{ width: '100%' }}
                   onClick={handleCheckout}
-                  disabled={isProcessing}
+                  disabled={loading}
                 >
-                  {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
+                  {loading ? 'Processing...' : 'Proceed to Checkout'}
                 </button>
               </div>
             </div>

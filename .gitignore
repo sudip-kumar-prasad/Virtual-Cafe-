@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+node_modules
+=======
 # Dependencies
 node_modules/
 npm-debug.log*
@@ -46,3 +49,4 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+>>>>>>> c4abbcd45b2c8831cbb9095bdb2d7bf3defdfa50

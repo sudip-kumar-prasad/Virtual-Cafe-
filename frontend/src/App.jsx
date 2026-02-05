@@ -9,10 +9,12 @@ import MenuPage from './pages/MenuPage';
 import CartPage from './pages/CartPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
-import SigninPage from './pages/SigninPage';
+import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import DashboardPage from './pages/DashboardPage';
 import OrdersPage from './pages/OrdersPage';
+import OrderSuccessPage from './pages/OrderSuccessPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 import NotFound from './pages/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import './index.css';
@@ -34,6 +36,11 @@ const App = () => {
             }}>
               <Routes>
                 <Route path="/" element={<HomePage />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <DashboardPage />
+                  </ProtectedRoute>
+                } />
                 <Route path="/menu" element={
                   <ProtectedRoute>
                     <MenuPage />
@@ -44,19 +51,23 @@ const App = () => {
                     <CartPage />
                   </ProtectedRoute>
                 } />
-                <Route path="/dashboard" element={
+                <Route path="/order-success" element={
                   <ProtectedRoute>
-                    <DashboardPage />
+                    <OrderSuccessPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/orders" element={
                   <ProtectedRoute>
-                    <OrdersPage />
+                    <OrderHistoryPage />
                   </ProtectedRoute>
                 } />
                 <Route path="/about" element={<AboutPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/signin" element={<SigninPage />} />
+                <Route path="/contact" element={
+                  <ProtectedRoute>
+                    <ContactPage />
+                  </ProtectedRoute>
+                } />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

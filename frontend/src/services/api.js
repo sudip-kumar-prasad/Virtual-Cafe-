@@ -1,10 +1,10 @@
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 class ApiService {
   async request(endpoint, options = {}) {
     const url = `${API_URL}${endpoint}`;
     const token = localStorage.getItem('token');
-    
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -16,11 +16,11 @@ class ApiService {
     try {
       const response = await fetch(url, config);
       const data = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(data.message || 'Something went wrong');
+        throw new Error(data.error || data.message || 'Something went wrong');
       }
-      
+
       return data;
     } catch (error) {
       throw error;
@@ -59,8 +59,8 @@ class ApiService {
     });
   }
 
-  async getUserOrders() {
-    return this.request('/orders');
+  async getMyOrders() {
+    return this.request('/orders/myorders');
   }
 
   // Health check

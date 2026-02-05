@@ -1,19 +1,26 @@
 {
   "name": "virtual-cafe",
   "version": "1.0.0",
-  "description": "Full-stack Virtual Cafe application with React frontend and Express/MySQL backend",
+  "description": "Full-stack Virtual Cafe application with React frontend and Express/MongoDB backend",
   "private": true,
   "scripts": {
-    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install",
-    "start": "npm run start:backend & npm run start:frontend",
-    "start:frontend": "cd frontend && npm start",
-    "start:backend": "cd backend && npm run dev",
-    "build:frontend": "cd frontend && npm run build",
-    "dev": "npm run start:backend & npm run start:frontend",
-    "test:frontend": "cd frontend && npm test",
-    "setup-db": "mysql -u root -p < backend/database.sql"
+    "start": "concurrently \"npm run start --prefix backend\" \"npm run start --prefix frontend\"",
+    "install-all": "npm install --prefix frontend && npm install --prefix backend",
+    "install-root": "npm install",
+    "setup": "npm install && npm run install-all",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run start --prefix frontend\"",
+    "build": "npm run build --prefix frontend"
   },
-  "keywords": ["cafe", "restaurant", "react", "express", "mysql"],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "cafe",
+    "restaurant",
+    "react",
+    "express",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC"
 }
