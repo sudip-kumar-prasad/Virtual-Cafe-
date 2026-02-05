@@ -13,9 +13,7 @@ const createOrder = asyncHandler(async (req, res) => {
     const REWARD_MAP = {
         'reward-muffin-50': { name: '🎁 Free Muffin', cost: 50, image: '/assets/menu/muffin.png' },
         'reward-oasis-roast-100': { name: '🎁 Free Oasis Roast', cost: 100, image: '/assets/menu/oasis-roast.png' },
-        'reward-latte-150': { name: '🎁 Free Sig. Latte', cost: 150, image: '/assets/menu/latte.png' },
-        // Legacy support
-        'reward-oasis-roast': { name: '🎁 Free Oasis Roast', cost: 100, image: '/assets/menu/oasis-roast.png' }
+        'reward-latte-150': { name: '🎁 Free Sig. Latte', cost: 150, image: '/assets/menu/latte.png' }
     };
 
     // Verify all menu items exist and are available
