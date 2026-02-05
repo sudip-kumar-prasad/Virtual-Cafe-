@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import apiService from '../services/api';
-import CartItem from '../components/CartItem';
+import './CartPage.css';
 
 const CartPage = () => {
   const { cartItems, cartTotal, updateQuantity, removeFromCart, clearCart } = useCart();
@@ -15,137 +15,159 @@ const CartPage = () => {
   // Handle the checkout process
   const handleCheckout = async () => {
     try {
-      // 1. Start loading state (disable button, show spinner/text)
       setLoading(true);
       setError(null);
 
-      // Helper to validate MongoDB ObjectIds
       const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
-
       const validItems = cartItems.filter(item => isValidObjectId(item._id || item.id));
 
       if (validItems.length === 0) {
         throw new Error("Your cart contains invalid items. Please clear your cart and add fresh items.");
       }
 
-      // 2. Prepare the order data to send to the backend
       const orderData = {
-        // Map cart items to the format the API expects (ID and Quantity)
         items: validItems.map(item => ({
-          id: item._id || item.id, // Ensure we have the correct ID
+          id: item._id || item.id,
           quantity: item.quantity
         })),
-        totalAmount: cartTotal, // Total price calculated in context
-        // Customer details from the logged-in user
+        totalAmount: cartTotal,
         customerInfo: {
           name: user?.name,
           email: user?.email,
-          ...(user?.phone && { phone: user.phone }) // Only include phone if it exists
+          ...(user?.phone && { phone: user.phone })
         },
-        orderType: 'takeaway' // Hardcoded for now, could be a dropdown later
+        orderType: 'takeaway'
       };
 
-      // 3. Send the request to the server
       await apiService.createOrder(orderData);
-
-      // 4. If successful, clear the local cart
       clearCart();
-
-      // 5. Navigate to the success page
       navigate('/order-success');
     } catch (err) {
-      // 6. If request fails, log and show error
       console.error("Checkout error:", err);
       setError(err.message || "Failed to place order. Please try again.");
     } finally {
-      // 7. Always turn off loading state, whether success or fail
       setLoading(false);
     }
   };
 
   return (
-    <div className="section">
-      <div className="container">
-        <h1 className="section-title">Your Cart</h1>
+    <div className="cart-page">
+      <div className="cart-page-container">
+        <header className="cart-header">
+          <h1>Your Cart</h1>
+          <p>Treat yourself to something wonderful at Oasis</p>
+        </header>
 
         {cartItems.length === 0 ? (
-          <div className="empty-cart" style={{ textAlign: 'center', marginTop: 'var(--spacing-xxl)' }}>
+          <div className="empty-cart-container">
+            <img
+              src="/assets/empty-cart.png"
+              alt="Empty Cart"
+              className="empty-cart-illustration"
+            />
             <h2>Your cart is empty</h2>
-            <p style={{ marginBottom: 'var(--spacing-lg)' }}>Add some delicious items from our menu!</p>
-            <Link to="/menu" className="btn">Browse Menu</Link>
+            <p>Wait, you haven't picked your favorite coffee yet! Explore our menu and find your perfect blend.</p>
+            <Link to="/menu" className="browse-menu-btn">Explore Menu</Link>
           </div>
         ) : (
-          <div className="cart-container" style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: 'var(--spacing-xl)'
-          }}>
-            {error && (
-              <div style={{
-                gridColumn: '1 / -1',
-                padding: '1rem',
-                backgroundColor: '#fee2e2',
-                color: '#dc2626',
-                borderRadius: '8px',
-                marginBottom: '1rem'
-              }}>
-                {error}
-              </div>
-            )}
-            <div className="cart-items">
-              <h2>Cart Items</h2>
-              {cartItems.map(item => (
-                <CartItem
-                  key={item.id}
-                  item={item}
-                  updateQuantity={updateQuantity}
-                  removeFromCart={removeFromCart}
-                />
+          <div className="cart-content-grid">
+            <main className="cart-items-section">
+              <h2>Review Items</h2>
+
+              {error && (
+                <div className="error-message">
+                  {error}
+                </div>
+              )}
+
+              {cartItems.map((item) => (
+                <div key={item.id} className="cart-item-card">
+                  <div className="cart-item-image-wrapper">
+                    <span className="cart-item-initial">{item.name.charAt(0)}</span>
+                  </div>
+
+                  <div className="cart-item-details">
+                    <h3 className="cart-item-name">{item.name}</h3>
+                    <p className="cart-item-price">${item.price.toFixed(2)}</p>
+                  </div>
+
+                  <div className="cart-item-actions-wrapper">
+                    <div className="quantity-controls">
+                      <button
+                        className="quantity-btn"
+                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        disabled={loading}
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+                      <span className="quantity-display">{item.quantity}</span>
+                      <button
+                        className="quantity-btn"
+                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        disabled={loading}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      className="remove-btn"
+                      onClick={() => removeFromCart(item.id)}
+                      disabled={loading}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
               ))}
 
-              <div style={{ marginTop: 'var(--spacing-lg)' }}>
-                <button className="btn btn-secondary" onClick={clearCart} disabled={loading}>Clear Cart</button>
-              </div>
-            </div>
+              <button
+                className="clear-cart-btn"
+                onClick={clearCart}
+                disabled={loading}
+              >
+                Clear All Items
+              </button>
+            </main>
 
-            <div className="cart-summary">
-              <div className="card">
-                <h2 style={{ marginTop: 0 }}>Order Summary</h2>
+            <aside className="order-summary-section">
+              <div className="order-summary-card">
+                <h2>Order Summary</h2>
 
-                <div className="cart-summary-items" style={{ marginBottom: 'var(--spacing-lg)' }}>
+                <div className="summary-items">
                   {cartItems.map(item => (
-                    <div key={item.id} style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      marginBottom: 'var(--spacing-sm)'
-                    }}>
-                      <span>{item.name} x {item.quantity}</span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    <div key={item.id} className="summary-item">
+                      <span className="summary-item-name">
+                        {item.name} × {item.quantity}
+                      </span>
+                      <span className="summary-item-price">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="cart-total" style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontWeight: 'bold',
-                  fontSize: '1.2rem',
-                  marginBottom: 'var(--spacing-lg)'
-                }}>
+                <div className="summary-divider"></div>
+
+                <div className="summary-total">
                   <span>Total</span>
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
 
                 <button
-                  className="btn"
-                  style={{ width: '100%' }}
+                  className="checkout-btn"
                   onClick={handleCheckout}
                   disabled={loading}
                 >
-                  {loading ? 'Processing...' : 'Proceed to Checkout'}
+                  {loading ? 'Ordering...' : 'Place Order'}
                 </button>
+
+                <div className="security-badge">
+                  <span>🔒 Secure Payments</span>
+                </div>
               </div>
-            </div>
+            </aside>
           </div>
         )}
       </div>

@@ -12,7 +12,8 @@ const MenuItem = ({ item }) => {
   };
 
   // Find if item is in cart and get its quantity
-  const cartItem = cartItems.find(cartItem => cartItem.id === item.id);
+  const itemId = item._id || item.id;
+  const cartItem = cartItems.find(cartItem => (cartItem._id || cartItem.id) === itemId);
   const quantity = cartItem ? cartItem.quantity : 0;
 
   const handleAddToCart = () => {
@@ -42,18 +43,18 @@ const MenuItem = ({ item }) => {
 
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity === 0) {
-      updateQuantity(item.id, 0); // This will remove the item
+      updateQuantity(itemId, 0); // This will remove the item
       setShowControls(false);
     } else {
-      updateQuantity(item.id, newQuantity);
+      updateQuantity(itemId, newQuantity);
     }
   };
 
   return (
     <div className="menu-item">
       <div className="menu-item-image">
-        <img 
-          src={imageError ? fallbackImage : item.image} 
+        <img
+          src={imageError ? fallbackImage : item.image}
           alt={item.name}
           onError={handleImageError}
         />
@@ -62,27 +63,27 @@ const MenuItem = ({ item }) => {
         <h3 className="menu-item-title">{item.name}</h3>
         <div className="menu-item-price">${item.price.toFixed(2)}</div>
         <p className="menu-item-desc">{item.description}</p>
-        <div className="quantity-controls" style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
+        <div className="quantity-controls" style={{
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
           gap: '12px',
           marginTop: 'var(--spacing-md)'
         }}>
           {(showControls || quantity > 0) ? (
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: '12px',
               background: 'var(--secondary-light)',
               padding: '8px 16px',
               borderRadius: 'var(--radius-md)',
               boxShadow: '0 2px 4px var(--shadow)'
             }}>
-              <button 
-                className="btn btn-secondary" 
+              <button
+                className="btn btn-secondary"
                 onClick={() => handleQuantityChange(quantity - 1)}
-                style={{ 
+                style={{
                   padding: '4px 12px',
                   minWidth: '32px',
                   borderRadius: 'var(--radius-sm)'
@@ -90,16 +91,16 @@ const MenuItem = ({ item }) => {
               >
                 -
               </button>
-              <span style={{ 
-                minWidth: '24px', 
+              <span style={{
+                minWidth: '24px',
                 textAlign: 'center',
                 fontWeight: '600',
                 fontSize: '1.1rem'
               }}>{quantity}</span>
-              <button 
-                className="btn" 
+              <button
+                className="btn"
                 onClick={() => handleQuantityChange(quantity + 1)}
-                style={{ 
+                style={{
                   padding: '4px 12px',
                   minWidth: '32px',
                   borderRadius: 'var(--radius-sm)'
@@ -109,11 +110,11 @@ const MenuItem = ({ item }) => {
               </button>
             </div>
           ) : (
-            <button 
-              className="btn" 
+            <button
+              className="btn"
               onClick={handleAddToCart}
-              style={{ 
-                width: '100%', 
+              style={{
+                width: '100%',
                 padding: '8px 16px',
                 borderRadius: 'var(--radius-md)',
                 boxShadow: '0 2px 4px var(--shadow)'

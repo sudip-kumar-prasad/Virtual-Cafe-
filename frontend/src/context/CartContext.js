@@ -7,7 +7,7 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [cartTotal, setCartTotal] = useState(0);
-  
+
   useEffect(() => {
     // Calculate cart total whenever items change
     const total = cartItems.reduce(
@@ -15,11 +15,11 @@ export const CartProvider = ({ children }) => {
       0
     );
     setCartTotal(total);
-    
+
     // Save to localStorage
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
   }, [cartItems]);
-  
+
   // Load cart from localStorage on initial mount
   useEffect(() => {
     const savedCart = localStorage.getItem('cartItems');
@@ -34,20 +34,26 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const addToCart = (item) => {
+    const itemId = item._id || item.id;
+    if (!itemId) {
+      console.warn("Attempted to add item without ID to cart:", item);
+      return;
+    }
+
     setCartItems(prevItems => {
-      // Check if item already exists in cart
-      const existingItem = prevItems.find(cartItem => cartItem.id === item.id);
-      
+      // Check if item already exists in cart, matching against both _id and id
+      const existingItem = prevItems.find(cartItem => (cartItem._id || cartItem.id) === itemId);
+
       if (existingItem) {
         // Increment quantity if item exists
-        return prevItems.map(cartItem => 
-          cartItem.id === item.id 
+        return prevItems.map(cartItem =>
+          (cartItem._id || cartItem.id) === itemId
             ? { ...cartItem, quantity: cartItem.quantity + 1 }
             : cartItem
         );
       } else {
-        // Add new item with quantity of 1
-        return [...prevItems, { ...item, quantity: 1 }];
+        // Add new item with quantity of 1, ensure we keep the ID in a consistent way
+        return [...prevItems, { ...item, id: itemId, quantity: 1 }];
       }
     });
   };
@@ -57,9 +63,9 @@ export const CartProvider = ({ children }) => {
       removeFromCart(id);
       return;
     }
-    
-    setCartItems(prevItems => 
-      prevItems.map(item => 
+
+    setCartItems(prevItems =>
+      prevItems.map(item =>
         item.id === id ? { ...item, quantity } : item
       )
     );
