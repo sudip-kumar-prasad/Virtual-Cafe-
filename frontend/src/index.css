@@ -60,7 +60,12 @@ body {
   background-color: var(--secondary-light);
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Playfair Display', serif;
   font-weight: 700;
   margin-bottom: var(--spacing-md);
@@ -237,6 +242,67 @@ a:hover {
 
 .nav-links a:hover:after {
   width: 100%;
+}
+
+/* Auth Links */
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.signin-btn,
+.signup-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  font-size: 0.95rem;
+}
+
+.signin-btn {
+  color: var(--primary);
+  border: 2px solid transparent;
+}
+
+.signin-btn:hover {
+  color: var(--primary-dark);
+  background-color: var(--secondary);
+}
+
+.signup-btn {
+  background-color: var(--primary);
+  color: var(--white) !important;
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 4px var(--shadow);
+}
+
+.signup-btn:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.logout-btn {
+  background: transparent;
+  border: 1px solid var(--gray);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.logout-btn:hover {
+  background-color: var(--gray-light);
+  color: var(--text-dark);
+  border-color: var(--text-dark);
 }
 
 /* Mobile Toggle */
@@ -428,6 +494,7 @@ a:hover {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

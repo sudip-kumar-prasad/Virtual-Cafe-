@@ -75,59 +75,65 @@ npm run start:backend
 ## Tech Stack
 
 ### Frontend
-- React 18
-- React Router DOM
-- React Hook Form
-- Lucide React Icons
-- CSS3
+- React 18, React Router DOM, React Hook Form, Lucide React Icons
 
 ### Backend
-- Express.js 4
-- MySQL 8
-- JWT Authentication
-- bcryptjs (Password hashing)
-- CORS
+- Express.js 4, MySQL 8, JWT Authentication, bcryptjs, CORS
 
-## Features
+## Database Setup
 
-- User authentication (register/login)
-- Menu browsing with database
-- Shopping cart functionality
-- Order management
-- User profile management
-- Responsive UI
-- RESTful API
+```sql
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-## API Endpoints
+CREATE TABLE menu_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  category VARCHAR(50) NOT NULL,
+  image VARCHAR(255),
+  available BOOLEAN DEFAULT TRUE
+);
 
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/menu` - Get menu items
-- `POST /api/orders` - Create order
-- `GET /api/orders` - Get user orders
-- `GET /api/health` - Health check
+CREATE TABLE orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  total DECIMAL(10, 2) NOT NULL,
+  status ENUM('pending', 'confirmed', 'preparing', 'ready', 'completed', 'cancelled') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 
-## Database Schema
+CREATE TABLE order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  menu_item_id INT NOT NULL,
+  quantity INT NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (menu_item_id) REFERENCES menu_items(id) ON DELETE CASCADE
+);
+```
 
-- **users** - User accounts
-- **menu_items** - Cafe menu items
-- **orders** - Customer orders
-- **order_items** - Order line items
+## Deployment Guide
 
-## Development
+### Backend (Render/Node)
+1. **Root Directory:** `backend`
+2. **Environment Variables:** `DATABASE_URL`, `JWT_SECRET`, `NODE_ENV=production`
+3. **Build Command:** `npm install`
+4. **Start Command:** `npm start`
 
-1. **Start MySQL server**
-2. **Run database setup:**
-   ```bash
-   npm run setup-db
-   ```
-3. **Start development servers:**
-   ```bash
-   npm run dev
-   ```
-
-Frontend: http://localhost:3000
-Backend: http://localhost:5000
+### Frontend (Vercel/React)
+1. **Root Directory:** `frontend`
+2. **Environment Variable:** `REACT_APP_API_URL=https://your-backend.com/api`
+3. **Build Command:** `npm run build`
+4. **Output Directory:** `build`
 
 ## License
 

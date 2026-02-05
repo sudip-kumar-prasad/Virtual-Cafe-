@@ -25,7 +25,7 @@ const SigninPage = () => {
 
     try {
       await signin(formData);
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       setMessage(error.message);
     }
