@@ -1,96 +1,197 @@
-.dashboard-container {
-  padding: var(--spacing-xxl) 0;
+/* ==========================================
+   DASHBOARD STYLES - STUDENT EDITION
+   How to read this file:
+   - This file controls the look of the "Member Portal" (Dashboard).
+   - We use the 'Warm Café Oasis' palette: AntiqueWhite and Sienna.
+   ========================================== */
+
+/* 1. THE MAIN DASHBOARD WRAPPER */
+.dashboard-page-wrapper {
+  min-height: 100vh;
+  background-color: #FAEBD7;
+  /* Our brand 'AntiqueWhite' */
+  padding: 40px 20px;
+  font-family: 'Lato', sans-serif;
+  color: #3e2723;
+  /* Deep coffee brown text */
 }
 
-.dashboard-header {
-  margin-bottom: var(--spacing-xxl);
-  text-align: left;
+/* 2. THE HERO SECTION (Top Welcome Area) */
+.dashboard-hero-container {
+  max-width: 1200px;
+  margin: 0 auto 40px auto;
+  position: relative;
+  height: 300px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
-.dashboard-header h1 {
-  font-size: 2.5rem;
-  color: var(--primary-dark);
-  margin-bottom: var(--spacing-xs);
+.hero-background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.dashboard-header p {
-  font-size: 1.2rem;
-  color: var(--text-muted);
-}
-
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-xxl);
-}
-
-.dashboard-card {
-  background: var(--white);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 12px var(--shadow);
+.hero-text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 100%);
   display: flex;
   flex-direction: column;
-  height: 100%;
+  justify-content: flex-end;
+  padding: 40px;
+  color: white;
 }
 
-.dashboard-card.main-action {
-  border-top: 5px solid var(--primary);
+.hero-text-overlay h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin: 0 0 10px 0;
 }
 
-.dashboard-card h2 {
-  margin-bottom: var(--spacing-sm);
-  color: var(--text-dark);
+.hero-text-overlay p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  max-width: 600px;
 }
 
-.dashboard-card p {
-  margin-bottom: var(--spacing-lg);
-  color: var(--text-muted);
-  flex-grow: 1;
+/* 3. THE MAIN LAYOUT GRID */
+.dashboard-content-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  /* Main areas on left, sidebar on right */
+  gap: 30px;
 }
 
-.dashboard-card .btn {
-  align-self: flex-start;
+/* 4. MEMBERSHIP & REWARDS SECTION */
+.membership-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  border-left: 8px solid #A0522D;
+  /* Our brand 'Sienna' */
 }
 
-.quick-links {
-  list-style: none;
-  padding: 0;
+.reward-badge-img {
+  width: 100px;
+  height: 100px;
 }
 
-.quick-links li {
-  margin-bottom: var(--spacing-sm);
+.membership-details h2 {
+  font-family: 'Playfair Display', serif;
+  margin: 0 0 5px 0;
+  color: #A0522D;
 }
 
-.quick-links a {
-  color: var(--primary);
+.points-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 5. QUICK ACTION CARDS */
+.actions-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.quick-action-link {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
   text-decoration: none;
-  font-weight: 500;
-  transition: color var(--transition-fast);
-}
-
-.quick-links a:hover {
-  color: var(--primary-dark);
-  text-decoration: underline;
-}
-
-.recent-activity {
-  background: var(--secondary);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-lg);
-}
-
-.recent-activity h2 {
-  margin-bottom: var(--spacing-md);
-  color: var(--primary-dark);
-}
-
-.activity-placeholder {
-  background: rgba(255, 255, 255, 0.5);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-md);
+  color: inherit;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+  transition: 0.3s;
   text-align: center;
-  color: var(--text-muted);
-  border: 2px dashed var(--border-color);
+  border: 1px solid #eee;
+}
+
+.quick-action-link:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(160, 82, 45, 0.1);
+  border-color: #A0522D;
+}
+
+.action-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.quick-action-link h3 {
+  margin: 0 0 10px 0;
+  color: #3e2723;
+}
+
+/* 6. SIDEBAR: RECENT ACTIVITY */
+.activity-sidebar {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+}
+
+.activity-sidebar h2 {
+  font-family: 'Playfair Display', serif;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.activity-item .info h4 {
+  margin: 0 0 5px 0;
+  font-size: 1rem;
+}
+
+.activity-item .info span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.activity-status {
+  background: #E8F5E9;
+  /* Light green */
+  color: #2E7D32;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* 7. RESPONSIVE DESIGN */
+@media (max-width: 900px) {
+  .dashboard-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-text-overlay h1 {
+    font-size: 2rem;
+  }
 }
