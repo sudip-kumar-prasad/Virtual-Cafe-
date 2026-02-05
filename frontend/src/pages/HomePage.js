@@ -74,33 +74,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Join Community Section (Visible only when not logged in) */}
-      {!user && (
-        <section style={{
-          backgroundColor: 'var(--primary)',
-          color: 'white',
-          padding: 'var(--spacing-lg) 0',
-          textAlign: 'center'
-        }}>
-          <div className="container">
-            <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--spacing-md)' }}>Join Our Coffee Community</h2>
-            <p style={{ marginBottom: 'var(--spacing-lg)', maxWidth: '600px', margin: '0 auto var(--spacing-lg)' }}>
-              Create an account to track orders, save your favorite items, and get exclusive offers!
-            </p>
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-              <Link to="/login" className="btn" style={{
-                backgroundColor: 'white',
-                color: 'var(--primary)',
-                fontWeight: 'bold'
-              }}>Login</Link>
-              <Link to="/signup" className="btn btn-outline" style={{
-                borderColor: 'white',
-                color: 'white'
-              }}>Sign Up</Link>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Content Container */}
       <div style={{

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Input from '../components/ui/input';
-import Button from '../components/ui/button';
+import './Auth.css'; // Import the new shared styles
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
@@ -41,71 +40,58 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="section">
-            <div className="container" style={{ maxWidth: '500px' }}>
-                <h1 className="section-title">Login</h1>
+        <div className="auth-container">
+            <div className="auth-card">
+                <h1 className="auth-title">Welcome Back</h1>
 
-                <div style={{
-                    backgroundColor: 'white',
-                    padding: '2rem',
-                    borderRadius: 'var(--radius-lg)',
-                    boxShadow: '0 4px 6px var(--shadow)'
-                }}>
-                    <form onSubmit={onSubmit}>
-                        {formError && (
-                            <div style={{
-                                backgroundColor: '#fee2e2',
-                                color: '#dc2626',
-                                padding: '0.75rem',
-                                borderRadius: 'var(--radius-md)',
-                                marginBottom: '1rem',
-                                fontSize: '0.9rem'
-                            }}>
-                                {formError}
-                            </div>
-                        )}
-
-                        <div className="form-field">
-                            <label htmlFor="email">Email</label>
-                            <Input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={email}
-                                placeholder="Enter your email"
-                                onChange={onChange}
-                                required
-                            />
+                <form onSubmit={onSubmit} className="auth-form">
+                    {formError && (
+                        <div className="error-message">
+                            {formError}
                         </div>
+                    )}
 
-                        <div className="form-field">
-                            <label htmlFor="password">Password</label>
-                            <Input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={password}
-                                placeholder="Enter password"
-                                onChange={onChange}
-                                required
-                            />
-                        </div>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="email">Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={email}
+                            placeholder="you@example.com"
+                            onChange={onChange}
+                            required
+                            className="auth-input"
+                        />
+                    </div>
 
-                        <Button
-                            type="submit"
-                            variant="default"
-                            isLoading={loading}
-                            className="w-full"
-                            style={{ width: '100%', marginTop: '1rem' }}
-                        >
-                            Login
-                        </Button>
-                    </form>
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={password}
+                            placeholder="Enter your password"
+                            onChange={onChange}
+                            required
+                            className="auth-input"
+                        />
+                    </div>
 
-                    <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-light)' }}>
-                        Don't have an account? <Link to="/signup" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>Sign up</Link>
-                    </p>
-                </div>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="auth-button"
+                    >
+                        {loading ? 'Signing In...' : 'Sign In'}
+                    </button>
+                </form>
+
+                <p className="auth-footer">
+                    New to Oasis?
+                    <Link to="/signup" className="auth-link">Create an account</Link>
+                </p>
             </div>
         </div>
     );
