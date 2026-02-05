@@ -1,248 +1,100 @@
-/* Cart Page - Warm Café Oasis Theme Alignment */
+/* ==========================================
+   CART PAGE STYLES - STUDENT EDITION
+   How to read this file:
+   - Blocks starting with '.' are "Classes".
+   - We use descriptive names so you know exactly what they style.
+   ========================================== */
 
-.cart-page {
+/* 1. THE MAIN PAGE BACKGROUND */
+.cart-page-wrapper {
     min-height: 100vh;
     background-color: #FAEBD7;
-    /* Branded AntiqueWhite */
-    padding: 4rem 0;
+    /* This is 'AntiqueWhite' - our main brand color */
+    padding: 40px 20px;
     color: #333333;
     font-family: 'Lato', sans-serif;
 }
 
-.cart-page-container {
-    max-width: 1200px;
+/* 2. THE CENTERED CONTAINER */
+.cart-content-container {
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 0 2rem;
+    /* This centers the container on the screen */
 }
 
-/* Branded Typography */
-.cart-header {
-    margin-bottom: 3rem;
+/* 3. PAGE HEADER */
+.cart-page-header {
     text-align: center;
+    margin-bottom: 50px;
 }
 
-.cart-header h1 {
+.main-title {
     font-family: 'Playfair Display', serif;
     font-size: 3rem;
-    font-weight: 700;
     color: #A0522D;
-    /* Branded Sienna */
-    margin-bottom: 0.5rem;
+    /* This is 'Sienna' - our earthy brown accent */
+    margin-bottom: 10px;
 }
 
-.cart-header p {
+.subtitle {
     font-size: 1.1rem;
-    color: #8B4513;
-    /* Primary Dark */
-    opacity: 0.8;
+    color: #555555;
 }
 
-/* Empty Cart - Branded Feel */
-.empty-cart-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 5rem 2rem;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(160, 82, 45, 0.1);
-    border: 1px solid #D2B48C;
+/* 4. THE EMPTY CART VIEW */
+.empty-cart-view {
+    background-color: #ffffff;
+    padding: 60px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto;
 }
 
-.empty-cart-illustration {
-    width: 240px;
-    height: auto;
-    margin-bottom: 2rem;
-    border-radius: 12px;
+.empty-cart-hero-image {
+    width: 250px;
+    opacity: 0.8;
+    margin-bottom: 30px;
 }
 
-.empty-cart-container h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    color: #A0522D;
-    margin-bottom: 1rem;
-}
-
-.empty-cart-container p {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 2.5rem;
-}
-
-.browse-menu-btn {
+.action-button-primary {
+    display: inline-block;
     background-color: #A0522D;
     color: white;
-    padding: 1rem 2.5rem;
-    font-size: 1rem;
-    font-weight: 700;
+    padding: 15px 40px;
     border-radius: 8px;
     text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(160, 82, 45, 0.2);
+    font-weight: bold;
+    margin-top: 25px;
+    transition: 0.3s;
 }
 
-.browse-menu-btn:hover {
+.action-button-primary:hover {
     background-color: #8B4513;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(160, 82, 45, 0.3);
+    /* Darker brown on hover */
 }
 
-/* Content Grid */
-.cart-content-grid {
+/* 5. THE FILLED CART LAYOUT (Grid) */
+.filled-cart-layout {
     display: grid;
-    grid-template-columns: 1fr 400px;
-    gap: 2.5rem;
-    align-items: start;
+    grid-template-columns: 1fr 380px;
+    /* Two columns: One flexible, one fixed at 380px */
+    gap: 30px;
 }
 
-/* Cart Items Section */
-.cart-items-section h2 {
-    font-size: 1.5rem;
-    color: #A0522D;
-    margin-bottom: 1.5rem;
+/* 6. INDIVIDUAL CART ITEM CARDS */
+.cart-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.section-heading {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 20px;
+    color: #5D4037;
 }
 
 .cart-item-card {
-    background: white;
-    display: grid;
-    grid-template-columns: 100px 1fr auto;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid #E0E0E0;
-    transition: transform 0.2s ease;
-}
-
-.cart-item-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.cart-item-image-wrapper {
-    width: 100px;
-    height: 100px;
-    background-color: #F5F5DC;
-    /* Branded Secondary */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.cart-item-initial {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    color: #A0522D;
-    font-weight: 700;
-}
-
-.cart-item-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    color: #333;
-    margin-bottom: 0.25rem;
-}
-
-.cart-item-price {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #A0522D;
-}
-
-.cart-item-actions-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-}
-
-.quantity-controls {
-    display: flex;
-    align-items: center;
-    background: #F8F8F8;
-    border-radius: 8px;
-    padding: 5px;
-    border: 1px solid #E0E0E0;
-}
-
-.quantity-btn {
-    background: white;
-    border: 1px solid #E0E0E0;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    color: #A0522D;
-    transition: all 0.2s;
-}
-
-.quantity-btn:hover:not(:disabled) {
-    background: #A0522D;
-    color: white;
-    border-color: #A0522D;
-}
-
-.quantity-display {
-    padding: 0 1rem;
-    font-weight: 700;
-    color: #333;
-    min-width: 45px;
-    text-align: center;
-}
-
-.remove-btn {
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    font-size: 0.85rem;
-    text-decoration: underline;
-    transition: color 0.2s;
-}
-
-.remove-btn:hover {
-    color: #FF8C00;
-    /* Branded Accent */
-}
-
-.clear-cart-btn {
-    background: transparent;
-    border: 1px solid #D2B48C;
-    color: #8B4513;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    margin-top: 1rem;
-    transition: all 0.2s;
-}
-
-.clear-cart-btn:hover {
-    background: #FAEBD7;
-    border-color: #A0522D;
-}
-
-/* Order Summary */
-.order-summary-section {
-    position: sticky;
-    top: 100px;
-}
-
-.order-summary-card {
-    background: white;
-    padding: 2.5rem;
-    border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
     border: 1px solid #D2B48C;
 }

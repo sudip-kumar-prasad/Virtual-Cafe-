@@ -1,150 +1,164 @@
 import React, { useState } from 'react';
+
+/** GLOBAL DATA
+ * We import our 'useCart' hook so this individual coffee card 
+ * can talk to the global shopping cart.
+ */
 import { useCart } from '../context/CartContext';
 
+/** THE MENU ITEM COMPONENT
+ * It receives one prop called 'item' which contains name, price, description, etc.
+ */
 const MenuItem = ({ item }) => {
+  // HOOKS: Tools from React
+  const { addToCart, updateQuantity, cartItems } = useCart();
   const [imageError, setImageError] = useState(false);
   const [showControls, setShowControls] = useState(false);
-  const { addToCart, updateQuantity, cartItems } = useCart();
+
+  // Fallback image if the coffee photo doesn't load
   const fallbackImage = "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=crop&w=400&h=300";
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
+  /** LOGIC: Is this item in the cart?
+   * We search the global 'cartItems' list to see if this specific coffee is already in it.
+   */
+  const uniqueId = item._id || item.id;
+  const foundInCart = cartItems.find(cartItem => (cartItem._id || cartItem.id) === uniqueId);
 
-  // Find if item is in cart and get its quantity
-  const itemId = item._id || item.id;
-  const cartItem = cartItems.find(cartItem => (cartItem._id || cartItem.id) === itemId);
-  const quantity = cartItem ? cartItem.quantity : 0;
+  // If found, we use its quantity, otherwise 0.
+  const currentQuantity = foundInCart ? foundInCart.quantity : 0;
 
-  const handleAddToCart = () => {
+  /** ACTION: Add to Cart
+   * This runs when the "Add to Cart" button is clicked for the first time.
+   */
+  const handleAddAction = () => {
     addToCart(item);
     setShowControls(true);
-    // Show toast notification
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = `${item.name} has been added to the cart`;
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: var(--primary);
-      color: white;
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      z-index: 1000;
-      animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 2.7s;
+
+    // Simple toast notification - creating an element manually for education
+    const toastElem = document.createElement('div');
+    toastElem.className = 'quick-toast';
+    toastElem.textContent = `Adding ${item.name} to cart...`;
+    toastElem.style.cssText = `
+      position: fixed; bottom: 20px; right: 20px;
+      background: #A0522D; color: white; padding: 12px 24px;
+      border-radius: 8px; z-index: 9999;
+      animation: toastIn 0.3s forwards;
     `;
-    document.body.appendChild(toast);
-    setTimeout(() => {
-      toast.remove();
-    }, 3000);
+    document.body.appendChild(toastElem);
+    setTimeout(() => toastElem.remove(), 2500);
   };
 
-  const handleQuantityChange = (newQuantity) => {
-    if (newQuantity === 0) {
-      updateQuantity(itemId, 0); // This will remove the item
+  /** ACTION: Change Quantity
+   * This runs when the + or - buttons are clicked.
+   */
+  const handleQtyChange = (newQty) => {
+    if (newQty <= 0) {
+      updateQuantity(uniqueId, 0); // This will remove the item from cart
       setShowControls(false);
     } else {
-      updateQuantity(itemId, newQuantity);
+      updateQuantity(uniqueId, newQty);
     }
   };
 
+  /** UI: Rendering the Card */
   return (
-    <div className="menu-item">
-      <div className="menu-item-image">
+    <div className="single-menu-card">
+
+      {/* 1. IMAGE PART */}
+      <div className="card-image-box">
         <img
           src={imageError ? fallbackImage : item.image}
           alt={item.name}
-          onError={handleImageError}
+          onError={() => setImageError(true)}
         />
       </div>
-      <div className="menu-item-content">
-        <h3 className="menu-item-title">{item.name}</h3>
-        <div className="menu-item-price">${item.price.toFixed(2)}</div>
-        <p className="menu-item-desc">{item.description}</p>
-        <div className="quantity-controls" style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '12px',
-          marginTop: 'var(--spacing-md)'
-        }}>
-          {(showControls || quantity > 0) ? (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              background: 'var(--secondary-light)',
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: '0 2px 4px var(--shadow)'
-            }}>
+
+      {/* 2. TEXT CONTENT PART */}
+      <div className="card-info-box">
+        <h3 className="card-title">{item.name}</h3>
+        <p className="card-price-tag">${item.price.toFixed(2)}</p>
+        <p className="card-description">{item.description}</p>
+
+        {/* 3. BUTTONS SECTION (Conditional) */}
+        <div className="card-interact-zone">
+          {(showControls || currentQuantity > 0) ? (
+
+            /* VIEW A: Quantity Controls (+ and -) */
+            <div className="qty-picker">
               <button
-                className="btn btn-secondary"
-                onClick={() => handleQuantityChange(quantity - 1)}
-                style={{
-                  padding: '4px 12px',
-                  minWidth: '32px',
-                  borderRadius: 'var(--radius-sm)'
-                }}
-              >
-                -
-              </button>
-              <span style={{
-                minWidth: '24px',
-                textAlign: 'center',
-                fontWeight: '600',
-                fontSize: '1.1rem'
-              }}>{quantity}</span>
+                className="qty-btn-minus"
+                onClick={() => handleQtyChange(currentQuantity - 1)}
+              >-</button>
+
+              <span className="qty-disp">{currentQuantity}</span>
+
               <button
-                className="btn"
-                onClick={() => handleQuantityChange(quantity + 1)}
-                style={{
-                  padding: '4px 12px',
-                  minWidth: '32px',
-                  borderRadius: 'var(--radius-sm)'
-                }}
-              >
-                +
-              </button>
+                className="qty-btn-plus"
+                onClick={() => handleQtyChange(currentQuantity + 1)}
+              >+</button>
             </div>
+
           ) : (
+
+            /* VIEW B: Simple Add Button */
             <button
-              className="btn"
-              onClick={handleAddToCart}
-              style={{
-                width: '100%',
-                padding: '8px 16px',
-                borderRadius: 'var(--radius-md)',
-                boxShadow: '0 2px 4px var(--shadow)'
-              }}
+              className="card-add-button"
+              onClick={handleAddAction}
             >
               Add to Cart
             </button>
+
           )}
         </div>
       </div>
+
+      {/* INLINE CSS FOR TEACHING: Simple animations */}
       <style>
         {`
-          @keyframes slideIn {
-            from {
-              transform: translateX(100%);
-              opacity: 0;
-            }
-            to {
-              transform: translateX(0);
-              opacity: 1;
-            }
+          @keyframes toastIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
           }
+
+          .single-menu-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: 0.2s;
+          }
+
+          .single-menu-card:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+          }
+
+          .card-image-box img { 
+            width: 100%; height: 200px; object-fit: cover; 
+          }
+
+          .card-info-box { padding: 20px; text-align: center; }
+          .card-title { margin: 0 0 5px 0; font-family: 'Playfair Display', serif; }
+          .card-price-tag { color: #A0522D; font-weight: bold; margin-bottom: 10px; }
+          .card-description { font-size: 0.9rem; color: #666; height: 40px; overflow: hidden; }
+
+          .card-add-button {
+            width: 100%; background: #A0522D; color: white;
+            border: none; padding: 10px; border-radius: 6px;
+            font-weight: bold; cursor: pointer; margin-top: 15px;
+          }
+
+          .qty-picker {
+            display: flex; justify-content: center; align-items: center;
+            gap: 15px; margin-top: 15px; background: #f9f9f9;
+            padding: 8px; border-radius: 8px;
+          }
+
+          .qty-disp { font-weight: bold; font-size: 1.1rem; }
           
-          @keyframes fadeOut {
-            from {
-              opacity: 1;
-            }
-            to {
-              opacity: 0;
-            }
+          .qty-btn-minus, .qty-btn-plus {
+            background: #A0522D; color: white; border: none;
+            width: 30px; height: 30px; border-radius: 4px; cursor: pointer;
           }
         `}
       </style>

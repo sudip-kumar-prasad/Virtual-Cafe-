@@ -2,82 +2,113 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+/** THE AUTH ROUTER
+ * This file handles everything related to Users: Joining (Register) and Signing In (Login).
+ */
 const router = express.Router();
 
-// Temporary in-memory storage when database is not available
-let users = [];
+/** 1. TEMPORARY MEMORY
+ * Since we are in development, we use this array to store users.
+ * Note: If you restart the server, the users will be wiped! In a real app, we use a Database.
+ */
+let registeredUsersList = [];
 
-// Register
-router.post('/register', async (req, res) => {
+/** 2. REGISTRATION ROUTE (Sign Up)
+ * URL: POST /api/auth/register
+ */
+router.post('/register', async (request, response) => {
   try {
-    const { name, email, password } = req.body;
+    // A. Receive data from the frontend
+    const { name, email, password } = request.body;
 
-    // Check if user exists in memory
-    const existingUser = users.find(user => user.email === email);
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+    // B. Validation: Make sure they filled everything out
+    if (!name || !email || !password) {
+      return response.status(400).json({
+        message: 'Please provide all fields: name, email, and password.'
+      });
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // C. Check if the email is already taken
+    const alreadyExists = registeredUsersList.find(u => u.email === email);
+    if (alreadyExists) {
+      return response.status(400).json({
+        message: 'A user with this email already exists. Try logging in instead!'
+      });
+    }
 
-    // Create user in memory
-    const newUser = {
-      id: users.length + 1,
-      name,
-      email,
-      password: hashedPassword,
+    // D. SECURE PASSWORDS: Never store raw passwords! 
+    // We "hash" them so they look like 's$2a$10$X...'
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    // E. Create the New User object
+    const newUserRecord = {
+      id: registeredUsersList.length + 1,
+      name: name,
+      email: email,
+      password: encryptedPassword,
       created_at: new Date()
     };
-    
-    users.push(newUser);
 
-    res.status(201).json({ 
-      message: 'User created successfully',
-      userId: newUser.id 
+    // F. Save to our in-memory list
+    registeredUsersList.push(newUserRecord);
+
+    // G. Send back a success message
+    response.status(201).json({
+      message: 'Welcome to Café Oasis! Your account has been created.',
+      userId: newUserRecord.id
     });
-  } catch (error) {
-    console.error('Register error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+
+  } catch (err) {
+    console.error('Error during registration:', err);
+    response.status(500).json({ message: 'Server had trouble creating your account.' });
   }
 });
 
-// Login
-router.post('/login', async (req, res) => {
+/** 3. LOGIN ROUTE (Sign In)
+ * URL: POST /api/auth/login
+ */
+router.post('/login', async (request, response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password } = request.body;
 
-    // Find user in memory
-    const user = users.find(u => u.email === email);
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+    // A. Find the user by their email
+    const userFound = registeredUsersList.find(u => u.email === email);
+    if (!userFound) {
+      return response.status(401).json({
+        message: 'Invalid email or password. Please check your spelling.'
+      });
     }
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+    // B. Compare the typed password with the encrypted one in our list
+    const passwordIsCorrect = await bcrypt.compare(password, userFound.password);
+    if (!passwordIsCorrect) {
+      return response.status(401).json({
+        message: 'Invalid email or password. Please check your spelling.'
+      });
     }
 
-    // Create JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'fallback_secret_key_for_testing',
+    // C. SECURE TOKENS: Generate a "Badge" (JWT) that the user carries.
+    // This lets the server know who is logged in for 24 hours.
+    const securityToken = jwt.sign(
+      { userId: userFound.id, email: userFound.email },
+      process.env.JWT_SECRET || 'secret_key_for_students',
       { expiresIn: '24h' }
     );
 
-    res.json({
-      message: 'Login successful',
-      token,
+    // D. Success! Send the badge and user info back to the frontend.
+    response.json({
+      message: 'Login successful! Welcome back.',
+      token: securityToken,
       user: {
-        id: user.id,
-        name: user.name,
-        email: user.email
+        id: userFound.id,
+        name: userFound.name,
+        email: userFound.email
       }
     });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+
+  } catch (err) {
+    console.error('Error during login:', err);
+    response.status(500).json({ message: 'Server had trouble logging you in.' });
   }
 });
 

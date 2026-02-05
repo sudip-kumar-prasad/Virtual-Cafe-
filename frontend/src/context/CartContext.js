@@ -1,85 +1,120 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+/** 1. THE CONTEXT CREATION
+ * Think of Context as a "Global Radio Station". 
+ * Any component in the app can "tune in" to this Context to get cart data.
+ */
 const CartContext = createContext();
 
+/** 2. EXPORTING THE HOOK
+ * This is a shortcut function so other components can easily say 'const cart = useCart()'
+ */
 export const useCart = () => useContext(CartContext);
 
+/** 3. THE PROVIDER COMPONENT
+ * This component "wraps" our entire app and holds the actual data.
+ */
 export const CartProvider = ({ children }) => {
+  // STATE: The list of items currently in the user's cart
   const [cartItems, setCartItems] = useState([]);
+
+  // STATE: The total price of everything in the cart
   const [cartTotal, setCartTotal] = useState(0);
 
+  /** SIDE EFFECT: Save to Folder/Memory
+   * Whenever 'cartItems' changes, we want to update the total price 
+   * and save the list to the browser's "LocalStorage" so it doesn't disappear if we refresh!
+   */
   useEffect(() => {
-    // Calculate cart total whenever items change
-    const total = cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
+    // A. Calculate Total
+    // sum is the running total, item is the current one we are looking at
+    const newTotal = cartItems.reduce(
+      (sum, item) => sum + (item.price * item.quantity),
       0
     );
-    setCartTotal(total);
+    setCartTotal(newTotal);
 
-    // Save to localStorage
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    // B. Save to LocalStorage (Browser Memory)
+    // We convert the array to a String because LocalStorage only stores text
+    localStorage.setItem('oasis_cart_data', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  // Load cart from localStorage on initial mount
+  /** SIDE EFFECT: Load on Start
+   * When the app first opens, we check if there's any saved cart data in the browser.
+   */
   useEffect(() => {
-    const savedCart = localStorage.getItem('cartItems');
-    if (savedCart) {
+    const savedData = localStorage.getItem('oasis_cart_data');
+    if (savedData) {
       try {
-        setCartItems(JSON.parse(savedCart));
+        // Convert text back into a JavaScript Array
+        setCartItems(JSON.parse(savedData));
       } catch (error) {
-        console.error('Error parsing cart data from localStorage');
+        console.error('Failed to load saved cart:', error);
         setCartItems([]);
       }
     }
   }, []);
 
-  const addToCart = (item) => {
-    const itemId = item._id || item.id;
-    if (!itemId) {
-      console.warn("Attempted to add item without ID to cart:", item);
-      return;
-    }
+  /** FUNCTION: addToCart
+   * Adds an item, or increases quantity if it's already there.
+   */
+  const addToCart = (menuItem) => {
+    // Step 1: Find the unique ID
+    const uniqueId = menuItem._id || menuItem.id;
 
-    setCartItems(prevItems => {
-      // Check if item already exists in cart, matching against both _id and id
-      const existingItem = prevItems.find(cartItem => (cartItem._id || cartItem.id) === itemId);
+    setCartItems(previousItems => {
+      // Step 2: Check if this item is already in our list
+      const foundItem = previousItems.find(item => (item._id || item.id) === uniqueId);
 
-      if (existingItem) {
-        // Increment quantity if item exists
-        return prevItems.map(cartItem =>
-          (cartItem._id || cartItem.id) === itemId
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
+      if (foundItem) {
+        // SCENARIO A: Item exists! We just increase its quantity by 1.
+        return previousItems.map(item =>
+          (item._id || item.id) === uniqueId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       } else {
-        // Add new item with quantity of 1, ensure we keep the ID in a consistent way
-        return [...prevItems, { ...item, id: itemId, quantity: 1 }];
+        // SCENARIO B: Brand new item! Add it to the list with quantity 1.
+        const newItemWithQty = { ...menuItem, id: uniqueId, quantity: 1 };
+        return [...previousItems, newItemWithQty];
       }
     });
   };
 
-  const updateQuantity = (id, quantity) => {
-    if (quantity < 1) {
-      removeFromCart(id);
+  /** FUNCTION: updateQuantity
+   * Manual update (like clicking + or - in the cart)
+   */
+  const updateQuantity = (itemId, newQuantity) => {
+    // If the quantity drops to 0 or less, we should just remove it!
+    if (newQuantity <= 0) {
+      removeFromCart(itemId);
       return;
     }
 
-    setCartItems(prevItems =>
-      prevItems.map(item =>
-        item.id === id ? { ...item, quantity } : item
+    setCartItems(previousItems =>
+      previousItems.map(item =>
+        (item._id || item.id) === itemId ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
-  const removeFromCart = (id) => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== id));
+  /** FUNCTION: removeFromCart
+   * Completely deletes an item from the list.
+   */
+  const removeFromCart = (itemId) => {
+    // We "filter" the list: keep everything EXCET the item we want to delete
+    setCartItems(previousItems => previousItems.filter(item => (item._id || item.id) !== itemId));
   };
 
+  /** FUNCTION: clearCart
+   * Empties the entire cart.
+   */
   const clearCart = () => {
     setCartItems([]);
   };
 
-  const cartValue = {
+  // This is the "Package" of data we share with the rest of the app
+  const sharedData = {
     cartItems,
     cartTotal,
     addToCart,
@@ -89,7 +124,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={cartValue}>
+    <CartContext.Provider value={sharedData}>
       {children}
     </CartContext.Provider>
   );

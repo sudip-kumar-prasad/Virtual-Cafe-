@@ -16,158 +16,150 @@ const CartPage = () => {
   const handleCheckout = async () => {
     try {
       setLoading(true);
-      setError(null);
-
-      const isValidObjectId = (id) => /^[0-9a-fA-F]{24}$/.test(id);
-      const validItems = cartItems.filter(item => isValidObjectId(item._id || item.id));
-
-      if (validItems.length === 0) {
-        throw new Error("Your cart contains invalid items. Please clear your cart and add fresh items.");
-      }
-
+      // 3. We create a simple object to represent the order
+      // In a real app, this would be sent to a backend server.
       const orderData = {
-        items: validItems.map(item => ({
-          id: item._id || item.id,
-          quantity: item.quantity
-        })),
+        items: cartItems,
         totalAmount: cartTotal,
-        customerInfo: {
-          name: user?.name,
-          email: user?.email,
-          ...(user?.phone && { phone: user.phone })
-        },
-        orderType: 'takeaway'
+        orderDate: new Date().toISOString()
       };
 
-      await apiService.createOrder(orderData);
+      console.log('Sending order to server...', orderData);
+
+      // 4. Simulate a short wait (mimicking server response time)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // 5. Success! Clear the cart and tell the user.
       clearCart();
-      navigate('/order-success');
-    } catch (err) {
-      console.error("Checkout error:", err);
-      setError(err.message || "Failed to place order. Please try again.");
+      alert('Success! Your order has been placed. Enjoy your Café Oasis experience!');
+
+      // 6. Send the user to the Dashboard to see their orders (mockup)
+      navigate('/dashboard');
+
+    } catch (error) {
+      // 7. Error Handling: Always prepare for things to go wrong!
+      console.error('Checkout failed:', error);
+      alert('Oops! Something went wrong while placing your order. Please try again.');
     } finally {
+      // 8. Stop the loading state regardless of success or failure
       setLoading(false);
     }
   };
 
+  /** RENDERING (THE JSX)
+   * This is where we define the visual structure of the page.
+   */
   return (
-    <div className="cart-page">
-      <div className="cart-page-container">
-        <header className="cart-header">
-          <h1>Your Cart</h1>
-          <p>Treat yourself to something wonderful at Oasis</p>
+    <div className="cart-page-wrapper">
+      <div className="cart-content-container">
+
+        {/* HEADER SECTION */}
+        <header className="cart-page-header">
+          <h1 className="main-title">Your Cart</h1>
+          <p className="subtitle">Treat yourself to something wonderful at Oasis</p>
         </header>
 
+        {/* CONDITIONAL RENDERING: Check if cart is empty */}
         {cartItems.length === 0 ? (
-          <div className="empty-cart-container">
+
+          /* VIEW 1: EMPTY CART */
+          <div className="empty-cart-view">
             <img
               src="/assets/empty-cart.png"
-              alt="Empty Cart"
-              className="empty-cart-illustration"
+              alt="An empty coffee cup"
+              className="empty-cart-hero-image"
             />
             <h2>Your cart is empty</h2>
             <p>Wait, you haven't picked your favorite coffee yet! Explore our menu and find your perfect blend.</p>
-            <Link to="/menu" className="browse-menu-btn">Explore Menu</Link>
+            <Link to="/menu" className="action-button-primary">Explore Menu</Link>
           </div>
+
         ) : (
-          <div className="cart-content-grid">
-            <main className="cart-items-section">
-              <h2>Review Items</h2>
 
-              {error && (
-                <div className="error-message">
-                  {error}
-                </div>
-              )}
+          /* VIEW 2: CART WITH ITEMS */
+          <div className="filled-cart-layout">
 
-              {cartItems.map((item) => (
-                <div key={item.id} className="cart-item-card">
-                  <div className="cart-item-image-wrapper">
-                    <span className="cart-item-initial">{item.name.charAt(0)}</span>
-                  </div>
+            {/* LEFT SIDE: LIST OF ITEMS */}
+            <main className="cart-items-list">
+              <h2 className="section-heading">Review Your Items</h2>
 
-                  <div className="cart-item-details">
-                    <h3 className="cart-item-name">{item.name}</h3>
-                    <p className="cart-item-price">${item.price.toFixed(2)}</p>
-                  </div>
+              {cartItems.map((itemInCart) => (
+                <div key={itemInCart.id || itemInCart._id} className="cart-item-card">
+                  <img src={itemInCart.image} alt={itemInCart.name} className="item-thumbnail" />
 
-                  <div className="cart-item-actions-wrapper">
-                    <div className="quantity-controls">
+                  <div className="item-details">
+                    <h3>{itemInCart.name}</h3>
+                    <p className="item-price-tag">${itemInCart.price.toFixed(2)}</p>
+
+                    {/* QUANTITY CONTROLS */}
+                    <div className="quantity-editor">
                       <button
-                        className="quantity-btn"
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        disabled={loading}
-                        aria-label="Decrease quantity"
-                      >
-                        −
-                      </button>
-                      <span className="quantity-display">{item.quantity}</span>
+                        onClick={() => updateQuantity(itemInCart.id || itemInCart._id, itemInCart.quantity - 1)}
+                        className="qty-btn"
+                      >-</button>
+                      <span className="qty-number">{itemInCart.quantity}</span>
                       <button
-                        className="quantity-btn"
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        disabled={loading}
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
+                        onClick={() => updateQuantity(itemInCart.id || itemInCart._id, itemInCart.quantity + 1)}
+                        className="qty-btn"
+                      >+</button>
                     </div>
-                    <button
-                      className="remove-btn"
-                      onClick={() => removeFromCart(item.id)}
-                      disabled={loading}
-                    >
-                      Remove
-                    </button>
                   </div>
+
+                  {/* REMOVE BUTTON */}
+                  <button
+                    className="remove-item-btn"
+                    onClick={() => removeFromCart(itemInCart.id || itemInCart._id)}
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
 
               <button
-                className="clear-cart-btn"
+                className="clear-all-btn"
                 onClick={clearCart}
                 disabled={loading}
               >
-                Clear All Items
+                Clear Entire Cart
               </button>
             </main>
 
-            <aside className="order-summary-section">
-              <div className="order-summary-card">
-                <h2>Order Summary</h2>
+            {/* RIGHT SIDE: ORDER SUMMARY */}
+            <aside className="order-summary-sidebar">
+              <div className="summary-box">
+                <h2 className="section-heading">Order Summary</h2>
 
-                <div className="summary-items">
-                  {cartItems.map(item => (
-                    <div key={item.id} className="summary-item">
-                      <span className="summary-item-name">
-                        {item.name} × {item.quantity}
-                      </span>
-                      <span className="summary-item-price">
-                        ${(item.price * item.quantity).toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="summary-divider"></div>
-
-                <div className="summary-total">
-                  <span>Total</span>
+                <div className="calculation-row">
+                  <span>Subtotal</span>
                   <span>${cartTotal.toFixed(2)}</span>
                 </div>
 
+                <div className="calculation-row">
+                  <span>Delivery</span>
+                  <span className="free-text">FREE</span>
+                </div>
+
+                <hr className="summary-divider" />
+
+                <div className="calculation-row total-row">
+                  <span>Grand Total</span>
+                  <span className="grand-total-amount">${cartTotal.toFixed(2)}</span>
+                </div>
+
                 <button
-                  className="checkout-btn"
+                  className="place-order-button"
                   onClick={handleCheckout}
                   disabled={loading}
                 >
-                  {loading ? 'Ordering...' : 'Place Order'}
+                  {loading ? 'Processing Order...' : 'Place My Order'}
                 </button>
 
-                <div className="security-badge">
-                  <span>🔒 Secure Payments</span>
+                <div className="security-notice">
+                  <span>🔒 Your payment is safe and secure</span>
                 </div>
               </div>
             </aside>
+
           </div>
         )}
       </div>
