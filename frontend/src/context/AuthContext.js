@@ -37,7 +37,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5001/api/auth/register', {
+      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+      const response = await fetch(`${baseUrl}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +70,8 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:5001/api/auth/login', {
+      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+      const response = await fetch(`${baseUrl}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
