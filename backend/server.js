@@ -32,6 +32,7 @@ const app = express();
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
     ? [
+      'https://virtual-cafe-amber.vercel.app',
       'https://virtual-cafe-z3nd-7o1p578yi-sudip-kumars-projects-8f5cb1b4.vercel.app',
       'https://virtual-cafe-v7rt-q4n0ah8xe-sudip-kumars-projects-8f5cb1b4.vercel.app'
     ]
