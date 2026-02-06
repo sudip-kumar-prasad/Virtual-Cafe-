@@ -19,7 +19,7 @@ import './DashboardPage.css';
 const DashboardPage = () => {
     // We get the user data from our global Auth system
     const { user } = useAuth();
-    const [orders, setOrders] = React.useState([]);
+
     const [points, setPoints] = React.useState(0);
     const [loading, setLoading] = React.useState(true);
 
@@ -30,7 +30,7 @@ const DashboardPage = () => {
                 const response = await apiService.getMyOrders();
                 if (response.success) {
                     const fetchedOrders = response.data;
-                    setOrders(fetchedOrders);
+
                     const earned = fetchedOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0);
                     const spent = fetchedOrders.reduce((sum, order) => sum + (order.pointsUsed || 0), 0);
                     setPoints(Math.floor(earned) - spent);
